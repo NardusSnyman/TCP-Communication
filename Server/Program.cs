@@ -11,7 +11,7 @@ namespace Server
         {
             
             ClientServer.Server server = new ClientServer.Server(998);
-            server.debug = new Action<string>((string e)=>
+            server.debug = new Action<string, int>((string e, int sum)=>
             {
                 Console.WriteLine(e);
             });
@@ -19,8 +19,7 @@ namespace Server
             cmd.operation = "run";
             cmd.action = new Func<ClientMessage, ServerMessage>((o) =>
             {
-                Console.WriteLine(Encoding.ASCII.GetString(o.messagearray));
-                return new ServerMessage("ok", true, new byte[0]);
+                return new ServerMessage("ok", true);
             });
             server.commands = new System.Collections.Generic.List<Command>() { cmd };
             server.Start();
