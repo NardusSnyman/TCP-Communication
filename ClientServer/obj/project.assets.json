@@ -696,11 +696,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nicho\\Documents\\GitHub\\ServerClient\\ClientServer\\ClientServer.csproj",
+      "projectUniqueName": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\ClientServer.csproj",
       "projectName": "ClientServer",
-      "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\ServerClient\\ClientServer\\ClientServer.csproj",
+      "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\ClientServer.csproj",
       "packagesPath": "C:\\Users\\nicho\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nicho\\Documents\\GitHub\\ServerClient\\ClientServer\\obj\\",
+      "outputPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Xamarin\\NuGet\\",

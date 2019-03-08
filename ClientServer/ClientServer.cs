@@ -26,6 +26,8 @@ namespace ClientServer
         private Task task;
         public void Start()
         {
+            listener = new TcpListener(IPAddress.Any, port);
+                listener.Start();
             if (debug == null)
             {
                 debug = new Action<string, int>((string e, int a)=>{
@@ -33,22 +35,16 @@ namespace ClientServer
             }
             task = new Task(new Action(() =>
             {
-            listener = new TcpListener(IPAddress.Any, port);
-                listener.Start();
+            
                 while (1 == 1)
                 {
-                    debug.Invoke("waiting for client", 1);
                     TcpClient client = listener.AcceptTcpClient();
                     debug.Invoke("connected", 1);
-                    NetworkStream stream = client.GetStream();
-                    //recieve size
-                    
-                    MemoryStream input = new MemoryStream();
-                    ReadStream(stream, ref input);
-                    debug.Invoke("recieved data", 1);
-                    //processing
-                    ClientMessage cm = new ClientMessage(input.ToArray());
+                    var bytes = RecieveBytes(client);
+                    debug.Invoke("message recieved-" + bytes.data.Length, 1);
+                    ClientMessage cm = new ClientMessage(bytes);
                     ServerMessage returnmsg = null;
+                    debug.Invoke("commands commencing", 1);
                     for (int x = 0; x < commands.Count && returnmsg == null; x++)
                     {
                         Command command = commands[x];
@@ -62,13 +58,16 @@ namespace ClientServer
                         returnmsg = new ServerMessage("", false);
                         debug.Invoke("NO OPERATION FOUND BY THE NAME OF " + cm.operation, 3);
                     }
+                   
                     //sending
-                    MemoryStream output = ServerMessage.toStream(returnmsg);
-
-                    stream.Write(output.ToArray(), 0, output.ToArray().Length);
+                    debug.Invoke("get bytes", 1);
+                    var output = returnmsg.Bytes();
+                    debug.Invoke("sending bytes", 1);
+                    SendBytes(client, output);
                     client.Close();
-                    debug.Invoke("sent data", 1);
+                    debug.Invoke("sent data-" + output.data.Length, 1);
                     debug.Invoke("client closed", 1);
+                    
                 }
                 
             }));
@@ -89,7 +88,9 @@ namespace ClientServer
         public Action<string, int> debug;
         public ServerMessage Communicate(ClientMessage cm)
         {
-            
+            TcpClient client = new TcpClient();
+            client.Connect(args.ip, args.port);
+            debug.Invoke("connected", 1);
             if (debug == null)
             {
                 debug = new Action<string, int>((p,q) =>
@@ -97,21 +98,18 @@ namespace ClientServer
 
                 });
             }
-            
-            TcpClient client = new TcpClient();
-            client.Connect(args.ip, args.port);
-            debug.Invoke("connected", 1);
-            NetworkStream stream = client.GetStream();
-            MemoryStream input = ClientMessage.toStream(cm);
-            stream.Write(input.ToArray(), 0, input.ToArray().Length);
-            debug.Invoke("sent data", 1);
+            debug.Invoke("get bytes-" + cm.Bytes().data.Length, 1);
+            var input = cm.Bytes();
+            debug.Invoke("sending bytes", 1);
+            SendBytes(client, input);
 
-            MemoryStream output = new MemoryStream();
-            //recieve size
-            ReadStream(stream, ref output);
-            debug.Invoke("recieved data", 1);
+            debug.Invoke("recieving bytes", 1);
+            var output = RecieveBytes(client);
+
+            debug.Invoke("recieved data-" + output.data.Length, 1);
             debug.Invoke("closing connection", 1);
-            return new ServerMessage(output.ToArray());
+            
+            return new ServerMessage(output);
         }
         public Client(ConnectionArguments args1)
         {
