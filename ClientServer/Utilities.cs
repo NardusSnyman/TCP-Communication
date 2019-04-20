@@ -13,9 +13,10 @@ namespace ClientServer
     {
         public static Encoding baseEncoding = Encoding.Unicode;
         public static Encoding networkEncoding = Encoding.UTF8;
-        public readonly static string separator1 = ".:.";
+        public static string separator1 = ".:.";
+        public static string separator2 = ":";
 
-        public static void SendBytes(TcpClient c, BaseEncode BaseEncode, byte ender)
+        public static void SendBytes(TcpClient c, BaseEncode BaseEncode, byte ender, Action<long> action)
         {
             //declare variables
             byte[] bytes = new byte[1024];
@@ -29,8 +30,8 @@ namespace ClientServer
             int x;
             while((x = ms.Read(bytes, 0, bytes.Length)) > 0)
             {
-                
-
+               if(action != null)
+                action.Invoke(ms.Position);
 
                 s.Write(bytes, 0, x);
                 
@@ -40,28 +41,53 @@ namespace ClientServer
             ms.CopyTo(s);
            
         }
-        public static BaseEncode RecieveBytes(TcpClient c, ref byte[] overread, byte ender)
+        public static BaseEncode RecieveBytes(TcpClient c, ref byte[] overread, byte ender, Action<long> action)
         {
             // Retrieve the network stream.  
             NetworkStream s = c.GetStream();
             c.ReceiveTimeout = 1000;
             MemoryStream ms = new MemoryStream();
+            MemoryStream ms2 = new MemoryStream();
             if (overread != null)
                 if (overread.Length > 0)
-                    ms.Read(overread, 0, overread.Length);
+                    ms2.Read(overread, 0, overread.Length);
 
             
             
             byte[] bytes = new byte[1024];
-            bool _break = false;
+            bool found = false;
             start:
             try
             {
-                while (!_break)
+                while (!false && ms2.Position < ms2.Length)
+                {
+                    int length = ms2.Read(bytes, 0, bytes.Length);
+                    int index = Array.IndexOf(bytes, ender);
+
+                    byte[] data = new byte[length];
+                    Array.ConstrainedCopy(bytes, 0, data, 0, length);
+                    if (index != -1)
+                    {
+
+                        ms.Write(data, 0, index);
+                        int length1 = data.Length - 1 - index;
+                        overread = new byte[length1];
+                        Array.ConstrainedCopy(data, index + 1, overread, 0, length1);
+                        found = true;
+                        break;
+                    }
+                    else
+                    {
+                        ms.Write(data, 0, data.Length);
+                    }
+                    if (action != null)
+                        action.Invoke(ms.Position);
+                }
+                while (!found)
                 {
                     int length = s.Read(bytes, 0, bytes.Length);
                     int index = Array.IndexOf(bytes, ender);
-
+                    
                     byte[] data = new byte[length];
                     Array.ConstrainedCopy(bytes, 0, data, 0, length);
                     if (index != -1)
@@ -71,12 +97,14 @@ namespace ClientServer
                         int length1 = data.Length - 1 - index;
                         overread = new byte[length1];
                         Array.ConstrainedCopy(data, index + 1, overread, 0, length1);
-                        _break = true;
+                        break;
                     }
                     else
                     {
                         ms.Write(data, 0, data.Length);
                     }
+                    if (action != null)
+                        action.Invoke(ms.Position);
                 }
             }
             catch (Exception)

@@ -11,6 +11,7 @@ namespace ClientServer
         public string message;
         public BaseEncode messagearray;
         public bool successful;
+        public int length { get { return Bytes().GetnetworkEncoding().data.Length; } }
         public ServerMessage()
         {
             successful = false;
@@ -32,12 +33,12 @@ namespace ClientServer
             Array.Copy(src, separator1.Length, dst, 0, dst.Length);
             var data3 = new BaseEncode(dst);//array
             messagearray = data3;
-            message = data1.String().Split(":")[0];
-            successful = Convert.ToBoolean(data1.String().Split(":")[1]);
+            message = data1.String().Split(separator2)[0];
+            successful = Convert.ToBoolean(data1.String().Split(separator2)[1]);
         }
         public BaseEncode Bytes()
         {
-            string arguments = $"{message}:{successful}{separator1}";
+            string arguments = $"{message}{separator2}{successful}{separator1}";
             MemoryStream ms = new MemoryStream();
             ms.Write(new BaseEncode(arguments).data);
             ms.Write(messagearray.data);
@@ -65,6 +66,7 @@ namespace ClientServer
         public string operation;
         public string message;
         public BaseEncode messagearray;
+        public int length { get { return Bytes().GetnetworkEncoding().data.Length; } }
         public ClientMessage()
         {
             operation = "null";
@@ -86,8 +88,8 @@ namespace ClientServer
             Array.Copy(src, separator1.Length, dst, 0, dst.Length);
             var data3 = new BaseEncode(dst);//array
             messagearray = data3;
-            operation = data1.String().Split(":")[0];
-            message =data1.String().Split(":")[1];
+            operation = data1.String().Split(separator2)[0];
+            message =data1.String().Split(separator2)[1];
         }
         public ClientMessage(string operation1, string message1, BaseEncode messagearray1 = null)
         {
@@ -105,7 +107,7 @@ namespace ClientServer
         }
         public BaseEncode Bytes()
         {
-            string arguments = $"{operation}:{message}{separator1}";
+            string arguments = $"{operation}{separator2}{message}{separator1}";
             MemoryStream ms = new MemoryStream();
             ms.Write(new BaseEncode(arguments).data);
             ms.Write(messagearray.data);
