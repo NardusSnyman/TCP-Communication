@@ -89,7 +89,9 @@ namespace ClientServer
     {
         public ConnectionArguments args;
         public Action<string, int> debug;
+        public byte ender = networkEncoding.GetBytes("@")[0];
         byte[] overread;
+        public static string separator1 = ".:.";
         public ServerMessage Communicate(ClientMessage cm)
         {
             if (debug == null)
@@ -110,16 +112,18 @@ namespace ClientServer
             debug.Invoke("bytes-" + cm.Bytes().data.Length, 1);
             var input = cm.Bytes();
             debug.Invoke("sending bytes", 1);
-            SendBytes(client, input);
+            SendBytes(client, input, ender);
 
             debug.Invoke("recieving bytes", 1);
-            var output = RecieveBytes(client, ref overread);
+            var output = RecieveBytes(client, ref overread, ender);
 
             debug.Invoke("recieved data-" + output.data.Length, 1);
             debug.Invoke("closing connection", 1);
             
             return new ServerMessage(output);
         }
+
+
         public Client(ConnectionArguments args1)
         {
             args = args1;

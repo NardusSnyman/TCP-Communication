@@ -11,14 +11,11 @@ namespace ClientServer
 {
     public class Utilities
     {
-        public static string separator1 = ".:.";
         public static Encoding baseEncoding = Encoding.Unicode;
         public static Encoding networkEncoding = Encoding.UTF8;
-        public static byte ender = networkEncoding.GetBytes("@")[0];
-        public static TimeSpan wait;
-        
-        
-        public static void SendBytes(TcpClient c, BaseEncode BaseEncode)
+        public readonly static string separator1 = ".:.";
+
+        public static void SendBytes(TcpClient c, BaseEncode BaseEncode, byte ender)
         {
             //declare variables
             byte[] bytes = new byte[1024];
@@ -43,7 +40,7 @@ namespace ClientServer
             ms.CopyTo(s);
            
         }
-        public static BaseEncode RecieveBytes(TcpClient c, ref byte[] overread)
+        public static BaseEncode RecieveBytes(TcpClient c, ref byte[] overread, byte ender)
         {
             // Retrieve the network stream.  
             NetworkStream s = c.GetStream();
