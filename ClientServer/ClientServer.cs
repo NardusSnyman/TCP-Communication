@@ -24,15 +24,18 @@ namespace ClientServer
         public TcpListener listener;
         public List<Command> commands;
         private Task task;
+        private byte[] overread;
         public void Start()
         {
             listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
+            
             if (debug == null)
             {
                 debug = new Action<string, int>((string e, int a)=>{
                 });
             }
+            debug.Invoke("listener started", 1);
             task = new Task(new Action(() =>
             {
             
@@ -40,7 +43,7 @@ namespace ClientServer
                 {
                     TcpClient client = listener.AcceptTcpClient();
                     debug.Invoke("connected", 1);
-                    var bytes = RecieveBytes(client);
+                    var bytes = RecieveBytes(client, ref overread);
                     debug.Invoke("message recieved-" + bytes.data.Length, 1);
                     ClientMessage cm = new ClientMessage(bytes);
                     ServerMessage returnmsg = null;
@@ -72,7 +75,7 @@ namespace ClientServer
                 
             }));
             task.Start();
-            
+            debug.Invoke("task started", 1);
         }
 
         
@@ -86,25 +89,31 @@ namespace ClientServer
     {
         public ConnectionArguments args;
         public Action<string, int> debug;
+        byte[] overread;
         public ServerMessage Communicate(ClientMessage cm)
         {
-            TcpClient client = new TcpClient();
-            client.Connect(args.ip, args.port);
-            debug.Invoke("connected", 1);
             if (debug == null)
             {
-                debug = new Action<string, int>((p,q) =>
+                debug = new Action<string, int>((p, q) =>
                 {
 
                 });
             }
-            debug.Invoke("get bytes-" + cm.Bytes().data.Length, 1);
+            TcpClient client = new TcpClient();
+            client.Connect(args.ip, args.port);
+            while (!client.Connected)
+            {
+
+            }
+            debug.Invoke("connected", 1);
+            
+            debug.Invoke("bytes-" + cm.Bytes().data.Length, 1);
             var input = cm.Bytes();
             debug.Invoke("sending bytes", 1);
             SendBytes(client, input);
 
             debug.Invoke("recieving bytes", 1);
-            var output = RecieveBytes(client);
+            var output = RecieveBytes(client, ref overread);
 
             debug.Invoke("recieved data-" + output.data.Length, 1);
             debug.Invoke("closing connection", 1);

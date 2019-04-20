@@ -14,45 +14,81 @@ namespace ClientServer
         public static string separator1 = ".:.";
         public static Encoding baseEncoding = Encoding.Unicode;
         public static Encoding networkEncoding = Encoding.UTF8;
+        public static byte ender = networkEncoding.GetBytes("@")[0];
+        public static TimeSpan wait;
+        
+        
         public static void SendBytes(TcpClient c, BaseEncode BaseEncode)
         {
+            //declare variables
             byte[] bytes = new byte[1024];
             var utf = BaseEncode.GetnetworkEncoding();
+
             NetworkStream s = c.GetStream();
             c.SendTimeout = 1000;
             MemoryStream ms = new MemoryStream(utf.data);
-            int length = 0;
-            while ((length = ms.Read(bytes, 0, bytes.Length)) > 0)//is reading something
+
+
+            int x;
+            while((x = ms.Read(bytes, 0, bytes.Length)) > 0)
             {
-                var incommingData = new byte[length];
-                Array.Copy(bytes, 0, incommingData, 0, length);
-                // Convert byte array to string message. 							
-                new MemoryStream(incommingData).CopyTo(s);
-                if (length != bytes.Length)
-                    break;
-                Console.WriteLine(ms.Position + " bytes");
+                
+
+
+                s.Write(bytes, 0, x);
+                
             }
+            s.WriteByte(ender);
+            Console.WriteLine("H=" + BaseEncode.String());
+            ms.CopyTo(s);
+           
         }
-        public static BaseEncode RecieveBytes(TcpClient c)
+        public static BaseEncode RecieveBytes(TcpClient c, ref byte[] overread)
         {
-            byte[] bytes = new byte[1024];
             // Retrieve the network stream.  
             NetworkStream s = c.GetStream();
             c.ReceiveTimeout = 1000;
-            int length;
             MemoryStream ms = new MemoryStream();
-            while ((length = s.Read(bytes, 0, bytes.Length)) > 0)//is reading something
-            {
-                var incommingData = new byte[length];
-                Array.Copy(bytes, 0, incommingData, 0, length);
-                // Convert byte array to string message. 							
-                new MemoryStream(incommingData).CopyTo(ms);
-                if (length != bytes.Length)
-                    break;
-                Console.WriteLine(ms.Position + " bytes");
-            }
-            var data1 = new NetworkEncoding(ms.ToArray());
+            if (overread != null)
+                if (overread.Length > 0)
+                    ms.Read(overread, 0, overread.Length);
 
+            
+            
+            byte[] bytes = new byte[1024];
+            bool _break = false;
+            start:
+            try
+            {
+                while (!_break)
+                {
+                    int length = s.Read(bytes, 0, bytes.Length);
+                    int index = Array.IndexOf(bytes, ender);
+
+                    byte[] data = new byte[length];
+                    Array.ConstrainedCopy(bytes, 0, data, 0, length);
+                    if (index != -1)
+                    {
+                        
+                        ms.Write(data, 0, index);
+                        int length1 = data.Length - 1 - index;
+                        overread = new byte[length1];
+                        Array.ConstrainedCopy(data, index + 1, overread, 0, length1);
+                        _break = true;
+                    }
+                    else
+                    {
+                        ms.Write(data, 0, data.Length);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                goto start;
+            }
+
+            var data1 = new NetworkEncoding(ms.ToArray());
+            Console.WriteLine("H="+ data1.GetBaseEncode().String());
             return data1.GetBaseEncode();
         }
         public static bool ByteArrayToFile(string fileName, BaseEncode uc, Action<int, int> act = null)
@@ -125,5 +161,6 @@ namespace ClientServer
             }
             return foundIndexes;
         }
+
     }
 }
