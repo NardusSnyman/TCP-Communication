@@ -16,19 +16,13 @@ namespace Server
             {
                 Console.WriteLine(e);
             });
-            var cmd = new Command();
-            cmd.operation = "size";
-            cmd.action = new Func<ClientMessage, ServerMessage>((o) =>
-            {
-                return new ServerMessage(new BaseEncode(data).GetnetworkEncoding().data.Length.ToString(), true);
-            });
             var cmd1 = new Command();
             cmd1.operation = "get";
             cmd1.action = new Func<ClientMessage, ServerMessage>((o) =>
             {
-                return new ServerMessage("", true, new BaseEncode(data));
+                return new ServerMessage("ok", true);
             });
-            server.commands = new System.Collections.Generic.List<Command>() { cmd, cmd1 };
+            server.commands = new System.Collections.Generic.List<Command>() { cmd1 };
             server.Start();
             Console.ReadLine();
         }

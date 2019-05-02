@@ -16,105 +16,61 @@ namespace ClientServer
         public static string separator1 = ".:.";
         public static string separator2 = ":";
 
-        public static void SendBytes(TcpClient c, BaseEncode BaseEncode, byte ender, Action<long> action)
+        public static void SendBytes(TcpClient c, BaseEncode BaseEncode, byte ender, Action complete = null)
         {
             //declare variables
             byte[] bytes = new byte[1024];
             var utf = BaseEncode.GetnetworkEncoding();
-
+            
             NetworkStream s = c.GetStream();
-            c.SendTimeout = 1000;
-            MemoryStream ms = new MemoryStream(utf.data);
-
-
-            int x;
-            while((x = ms.Read(bytes, 0, bytes.Length)) > 0)
-            {
-               if(action != null)
-                action.Invoke(ms.Position);
-
-                s.Write(bytes, 0, x);
-                
-            }
-            s.WriteByte(ender);
-            Console.WriteLine("H=" + BaseEncode.String());
-            ms.CopyTo(s);
-           
-        }
-        public static BaseEncode RecieveBytes(TcpClient c, ref byte[] overread, byte ender, Action<long> action)
-        {
-            // Retrieve the network stream.  
-            NetworkStream s = c.GetStream();
-            c.ReceiveTimeout = 1000;
             MemoryStream ms = new MemoryStream();
-            MemoryStream ms2 = new MemoryStream();
-            if (overread != null)
-                if (overread.Length > 0)
-                    ms2.Read(overread, 0, overread.Length);
+            ms.Write(utf.data, 0, utf.data.Length);
+            ms.WriteByte(ender);
 
-            
-            
-            byte[] bytes = new byte[1024];
-            bool found = false;
-            start:
-            try
+            foreach(byte b in ms.ToArray())
             {
-                while (!false && ms2.Position < ms2.Length)
+                Console.WriteLine(new NetworkEncoding(b).GetBaseEncode().String());
+                s.WriteByte(b);
+            }
+            
+            
+            if(complete != null)
+            {
+                complete();
+            }
+        }
+        public static void RecieveBytes(TcpClient c, byte ender, Action<BaseEncode> complete)
+        {
+            // Retrieve the network stream.
+            Console.WriteLine("1");
+            NetworkStream s = c.GetStream();
+            MemoryStream ms = new MemoryStream();
+            while (true)
+            {
+                try
                 {
-                    int length = ms2.Read(bytes, 0, bytes.Length);
-                    int index = Array.IndexOf(bytes, ender);
-
-                    byte[] data = new byte[length];
-                    Array.ConstrainedCopy(bytes, 0, data, 0, length);
-                    if (index != -1)
+                    if (s.DataAvailable)
                     {
-
-                        ms.Write(data, 0, index);
-                        int length1 = data.Length - 1 - index;
-                        overread = new byte[length1];
-                        Array.ConstrainedCopy(data, index + 1, overread, 0, length1);
-                        found = true;
-                        break;
-                    }
-                    else
-                    {
-                        ms.Write(data, 0, data.Length);
-                    }
-                    if (action != null)
-                        action.Invoke(ms.Position);
-                }
-                while (!found)
-                {
-                    int length = s.Read(bytes, 0, bytes.Length);
-                    int index = Array.IndexOf(bytes, ender);
-                    
-                    byte[] data = new byte[length];
-                    Array.ConstrainedCopy(bytes, 0, data, 0, length);
-                    if (index != -1)
-                    {
+                        byte b = Convert.ToByte(s.ReadByte());
+                        if (b.Equals(ender))
+                        {
+                            break;
+                        }
                         
-                        ms.Write(data, 0, index);
-                        int length1 = data.Length - 1 - index;
-                        overread = new byte[length1];
-                        Array.ConstrainedCopy(data, index + 1, overread, 0, length1);
-                        break;
+                        ms.WriteByte(b);
+                        Console.WriteLine(new NetworkEncoding(b).GetBaseEncode().String());
                     }
-                    else
-                    {
-                        ms.Write(data, 0, data.Length);
-                    }
-                    if (action != null)
-                        action.Invoke(ms.Position);
+                }
+                catch (Exception)
+                {
+
                 }
             }
-            catch (Exception)
-            {
-                goto start;
-            }
+
 
             var data1 = new NetworkEncoding(ms.ToArray());
-            Console.WriteLine("H="+ data1.GetBaseEncode().String());
-            return data1.GetBaseEncode();
+            
+            complete(data1.GetBaseEncode());
         }
         public static bool ByteArrayToFile(string fileName, BaseEncode uc, Action<int, int> act = null)
         {
@@ -187,5 +143,38 @@ namespace ClientServer
             return foundIndexes;
         }
 
+        private static byte ConvertBoolArrayToByte(bool[] source)
+        {
+            byte result = 0;
+            // This assumes the array never contains more than 8 elements!
+            int index = 8 - source.Length;
+
+            // Loop through the array
+            foreach (bool b in source)
+            {
+                // if the element is 'true' set the bit at that position
+                if (b)
+                    result |= (byte)(1 << (7 - index));
+
+                index++;
+            }
+
+            return result;
+        }
+
+        private static bool[] ConvertByteToBoolArray(byte b)
+        {
+            // prepare the return result
+            bool[] result = new bool[8];
+
+            // check each bit in the byte. if 1 set to true, if 0 set to false
+            for (int i = 0; i < 8; i++)
+                result[i] = (b & (1 << i)) == 0 ? false : true;
+
+            // reverse the array
+            Array.Reverse(result);
+
+            return result;
+        }
     }
 }

@@ -123,6 +123,12 @@ namespace ClientServer
         {
             data = data1;
         }
+        public NetworkEncoding(byte data1)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(data1);
+            data = ms.ToArray();
+        }
         public NetworkEncoding(string data1)
         {
             data = networkEncoding.GetBytes(data1);
@@ -142,6 +148,12 @@ namespace ClientServer
         public BaseEncode(byte[] data1)
         {
             data = data1;
+        }
+        public BaseEncode(byte data1)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(data1);
+            data = ms.ToArray();
         }
         public NetworkEncoding GetnetworkEncoding()
         {

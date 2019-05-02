@@ -24,8 +24,7 @@ namespace ClientServer
         public TcpListener listener;
         public List<Command> commands;
         private Task task;
-        private byte[] overread;
-        public byte ender = networkEncoding.GetBytes("@")[0];
+        public byte ender = new NetworkEncoding(";").data[0];
         public void Start()
         {
             listener = new TcpListener(IPAddress.Any, port);
@@ -44,7 +43,8 @@ namespace ClientServer
                 {
                     TcpClient client = listener.AcceptTcpClient();
                     debug.Invoke("connected", 1);
-                    var bytes = RecieveBytes(client, ref overread, ender, null);
+                    RecieveBytes(client, ender, new Action<BaseEncode>((bytes) => {
+                    
                     debug.Invoke("message recieved-" + bytes.data.Length, 1);
                     ClientMessage cm = new ClientMessage(bytes);
                     ServerMessage returnmsg = null;
@@ -67,11 +67,11 @@ namespace ClientServer
                     debug.Invoke("get bytes", 1);
                     var output = returnmsg.Bytes();
                     debug.Invoke("sending bytes", 1);
-                    SendBytes(client, output, ender, null);
+                    SendBytes(client, output, ender);
                     client.Close();
                     debug.Invoke("sent data-" + output.data.Length, 1);
                     debug.Invoke("client closed", 1);
-                    
+                    }));
                 }
                 
             }));
@@ -90,10 +90,8 @@ namespace ClientServer
     {
         public ConnectionArguments args;
         public Action<string, int> debug;
-        public byte ender = networkEncoding.GetBytes("@")[0];
-        byte[] overread;
-        public static string separator1 = ".:.";
-        public ServerMessage Communicate(ClientMessage cm, Action<long> sendProg = null, Action<long> recieveProg = null)
+        public byte ender = new NetworkEncoding(";").data[0];
+        public void Communicate(ClientMessage cm, Action<ServerMessage> complete)
         {
             if (debug == null)
             {
@@ -112,16 +110,18 @@ namespace ClientServer
             
             debug.Invoke("bytes-" + cm.Bytes().data.Length, 1);
             var input = cm.Bytes();
-            debug.Invoke("sending bytes", 1);
-            SendBytes(client, input, ender, sendProg);
+            debug.Invoke("sending bytes " + input.String(), 1);
+            SendBytes(client, input, ender);
 
             debug.Invoke("recieving bytes", 1);
-            var output = RecieveBytes(client, ref overread, ender, recieveProg);
+            RecieveBytes(client, ender, new Action<BaseEncode>((x)=> { complete(new ServerMessage(x));
+                debug.Invoke("recieved data-" + x.data.Length, 1);
+                debug.Invoke("closing connection", 1);
+                client.Close();
+            }));
 
-            debug.Invoke("recieved data-" + output.data.Length, 1);
-            debug.Invoke("closing connection", 1);
-            
-            return new ServerMessage(output);
+
+           
         }
 
 
