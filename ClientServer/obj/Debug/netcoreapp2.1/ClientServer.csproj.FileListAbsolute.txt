@@ -25,12 +25,13 @@ C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.AssemblyInfo.cs
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.dll
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\bin\Debug\netcoreapp2.1\ClientServer.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.csprojAssemblyReference.cache
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.csproj.CoreCompileInputs.cache
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.AssemblyInfoInputs.cache
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.AssemblyInfo.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.csproj.CopyComplete
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.1\ClientServer.pdb
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\bin\Debug\netcoreapp2.1\ClientServer.deps.json
-C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\bin\Debug\netcoreapp2.1\ClientServer.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\bin\Debug\netcoreapp2.1\ClientServer.pdb

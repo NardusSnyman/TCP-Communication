@@ -12,7 +12,8 @@ namespace Client
             {
                 Console.WriteLine(o);
             });
-            client.Communicate(new ClientServer.ClientMessage("get", ""), ((x)=>{ Console.WriteLine(x.length); }));
+            var msg = client.Communicate(new ClientServer.ClientMessage("repeat", "hello"));
+            Console.WriteLine(msg.message);
             Console.ReadLine();
         }
     }

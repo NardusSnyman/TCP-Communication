@@ -1,0 +1,9 @@
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\bin\Debug\netcoreapp2.0\ClientServer.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.0\ClientServer.csprojAssemblyReference.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.0\ClientServer.csproj.CoreCompileInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.0\ClientServer.AssemblyInfoInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.0\ClientServer.AssemblyInfo.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.0\ClientServer.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\obj\Debug\netcoreapp2.0\ClientServer.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\bin\Debug\netcoreapp2.0\ClientServer.deps.json
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\ClientServer\bin\Debug\netcoreapp2.0\ClientServer.pdb
