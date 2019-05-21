@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="ClientServer">
-      <HintPath>..\ClientServer\bin\Debug\netcoreapp2.0\ClientServer.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\ClientServer\ClientServer.csproj" />
   </ItemGroup>
 
 </Project>

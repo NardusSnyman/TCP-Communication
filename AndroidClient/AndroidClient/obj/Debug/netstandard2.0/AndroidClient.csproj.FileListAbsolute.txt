@@ -1,0 +1,12 @@
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.csprojAssemblyReference.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\App.xaml.g.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\MainPage.xaml.g.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.csproj.CoreCompileInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.AssemblyInfoInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.AssemblyInfo.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\bin\Debug\netstandard2.0\AndroidClient.deps.json
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\bin\Debug\netstandard2.0\AndroidClient.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\bin\Debug\netstandard2.0\AndroidClient.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\XamlC.stamp
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.pdb

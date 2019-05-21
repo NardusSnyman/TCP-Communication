@@ -1,0 +1,9 @@
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\bin\Debug\netstandard2.0\AndroidClass.deps.json
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\bin\Debug\netstandard2.0\AndroidClass.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\bin\Debug\netstandard2.0\AndroidClass.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\AndroidClass.csprojAssemblyReference.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\AndroidClass.csproj.CoreCompileInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\AndroidClass.AssemblyInfoInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\AndroidClass.AssemblyInfo.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\AndroidClass.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\AndroidClass.pdb

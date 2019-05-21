@@ -10,8 +10,7 @@ namespace Server
 
         static void Main(string[] args)
         {
-            byte[] data = File.ReadAllBytes(Directory.GetCurrentDirectory() + @"\text.txt");
-            ClientServer.Server server = new ClientServer.Server(998);
+            ClientServer.Server server = new ClientServer.Server(new ConnectionArguments("", 998, '@', Convert.ToByte(';')));
             server.debug = new Action<string, int>((string e, int sum)=>
             {
                 Console.WriteLine(e);
@@ -20,6 +19,7 @@ namespace Server
             cmd1.operation = "repeat";
             cmd1.action = new Func<ClientMessage, ServerMessage>((o) =>
             {
+                Console.WriteLine("XX=" + o.message);
                 return new ServerMessage("xx:" + o.message, true);
             });
             server.commands = new System.Collections.Generic.List<Command>() { cmd1 };

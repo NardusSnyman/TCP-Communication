@@ -2,8 +2,8 @@
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Runtime;
+using System.Runtime;
 using Android.Widget;
-using System.Net.Sockets;
 using System;
 using ClientServer;
 

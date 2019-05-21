@@ -1,4 +1,5 @@
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\AndroidCommunication.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\ClientServer.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\Java.Interop.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\Mono.Android.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\mscorlib.dll
@@ -21,6 +22,12 @@ C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunic
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\Xamarin.Android.Support.v7.RecyclerView.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\Xamarin.Android.Support.Vector.Drawable.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\Xamarin.Essentials.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.Runtime.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.ComponentModel.Composition.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.Net.Sockets.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.Collections.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.Runtime.Extensions.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.Net.Primitives.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.Net.Http.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.Runtime.Serialization.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidCommunication\obj\Debug\71\android\assets\System.ServiceModel.Internals.dll

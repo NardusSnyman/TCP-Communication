@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
-using static ClientServer.Utilities;
+using static ClientServer.SendRecieve;
 
 namespace ClientServer
 {
@@ -11,7 +12,6 @@ namespace ClientServer
         public string message;
         public BaseEncode messagearray;
         public bool successful;
-        public int length { get { return Bytes().GetnetworkEncoding().data.Length; } }
         public ServerMessage()
         {
             successful = false;
@@ -19,39 +19,18 @@ namespace ClientServer
             messagearray = new BaseEncode("null");
         }
 
-        public ServerMessage(BaseEncode bytes)
+        public ServerMessage(BaseEncode bytes, char separator)
         {
-            try
-            {
-                var indexes = GetIndexes(bytes, separator1);
-                byte[] new1 = new byte[indexes[0]];
-                byte[] new2 = new byte[bytes.data.Length - indexes[0]];
-                Array.ConstrainedCopy(bytes.data, 0, new1, 0, indexes[0]);
-                Array.ConstrainedCopy(bytes.data, indexes[0], new2, 0, new2.Length);
-                var data1 = new BaseEncode(new1);//arguments
-                var data2 = new BaseEncode(new2);//sub-array
-                byte[] src = data2.data;
-                byte[] dst = new byte[src.Length - separator1.Length];
-                Array.Copy(src, separator1.Length, dst, 0, dst.Length);
-                var data3 = new BaseEncode(dst);//array
-                messagearray = data3;
-                message = data1.String().Split(separator2)[0];
-                successful = Convert.ToBoolean(data1.String().Split(separator2)[1]);
-            }
-            catch (Exception)
-            {
-
-            }
+            string data = bytes.String();
+            var param = data.Split(separator);
+            message = param[0];
+            successful = Boolean.Parse(param[1]);
+            messagearray = new BaseEncode(param[2]);
         }
-        public BaseEncode Bytes()
+        public BaseEncode Bytes(char separator)
         {
-            string arguments = $"{message}{separator2}{successful}{separator1}";
-            MemoryStream ms = new MemoryStream();
-            var x = new BaseEncode(arguments).data;
-            var y = messagearray.data;
-            ms.Write(x, 0 , x.Length);
-            ms.Write(y, 0, y.Length);
-            var u = new BaseEncode(ms.ToArray());
+            string arguments = $"{message}{separator}{successful}{separator}{messagearray.String()}";
+            var u = new BaseEncode(arguments);
             return u;
         }
         public ServerMessage(string message1, bool successful1, BaseEncode messagearray1 = null)
@@ -75,7 +54,6 @@ namespace ClientServer
         public string operation;
         public string message;
         public BaseEncode messagearray;
-        public int length { get { return Bytes().GetnetworkEncoding().data.Length; } }
         public ClientMessage()
         {
             operation = "null";
@@ -83,22 +61,13 @@ namespace ClientServer
             messagearray = new BaseEncode("null");
         }
 
-        public ClientMessage(BaseEncode bytes)
+        public ClientMessage(BaseEncode bytes, char separator)
         {
-            var indexes = GetIndexes(bytes, separator1);
-            byte[] new1 = new byte[indexes[0]];
-            byte[] new2 = new byte[bytes.data.Length - indexes[0]];
-            Array.ConstrainedCopy(bytes.data, 0, new1, 0, indexes[0]);
-            Array.ConstrainedCopy(bytes.data, indexes[0], new2, 0, new2.Length);
-            var data1 = new BaseEncode(new1);//arguments
-            var data2 = new BaseEncode(new2);//sub-array
-            byte[] src = data2.data;
-            byte[] dst = new byte[src.Length - separator1.Length];
-            Array.Copy(src, separator1.Length, dst, 0, dst.Length);
-            var data3 = new BaseEncode(dst);//array
-            messagearray = data3;
-            operation = data1.String().Split(separator2)[0];
-            message =data1.String().Split(separator2)[1];
+            string data = bytes.String();
+            var param = data.Split(separator);
+            operation = param[0];
+            message = param[1];
+            messagearray = new BaseEncode(param[2]);
         }
         public ClientMessage(string operation1, string message1, BaseEncode messagearray1 = null)
         {
@@ -114,16 +83,64 @@ namespace ClientServer
             }
             else messagearray = messagearray1;
         }
-        public BaseEncode Bytes()
+        public BaseEncode Bytes(char separator)
         {
-            string arguments = $"{operation}{separator2}{message}{separator1}";
-            MemoryStream ms = new MemoryStream();
-            var x = new BaseEncode(arguments).data;
-            var y = messagearray.data;
-            ms.Write(x, 0, x.Length);
-            ms.Write(y, 0, y.Length);
-            var u = new BaseEncode(ms.ToArray());
+            string arguments = $"{operation}{separator}{message}{separator}";
+            var u = new BaseEncode(arguments);
             return u;
+        }
+
+    }
+
+    public class SendRecieve
+    {
+        public static void SendBytes(TcpClient c, BaseEncode BaseEncode, byte ender)
+        {
+            //declare variables
+            byte[] bytes = new byte[1024];
+            var utf = BaseEncode.GetnetworkEncoding();
+
+            NetworkStream s = c.GetStream();
+            MemoryStream ms = new MemoryStream();
+            ms.Write(utf.data, 0, utf.data.Length);
+            ms.WriteByte(ender);
+
+            foreach (byte b in ms.ToArray())
+            {
+                s.WriteByte(b);
+            }
+
+        }
+        public static BaseEncode RecieveBytes(TcpClient c, byte ender)
+        {
+            // Retrieve the network stream.
+            NetworkStream s = c.GetStream();
+            MemoryStream ms = new MemoryStream();
+            while (true)
+            {
+                try
+                {
+                    if (s.DataAvailable)
+                    {
+                        byte b = Convert.ToByte(s.ReadByte());
+                        if (b.Equals(ender))
+                        {
+                            break;
+                        }
+
+                        ms.WriteByte(b);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+
+            var data1 = new NetworkEncoding(ms.ToArray());
+
+            return data1.GetBaseEncode();
         }
 
     }
@@ -142,15 +159,15 @@ namespace ClientServer
         }
         public NetworkEncoding(string data1)
         {
-            data = networkEncoding.GetBytes(data1);
+            data = Encoding.UTF8.GetBytes(data1);
         }
         public BaseEncode GetBaseEncode()
         {
-            return new BaseEncode(Encoding.Convert(networkEncoding, baseEncoding, data));
+            return new BaseEncode(Encoding.Convert(Encoding.UTF8, Encoding.ASCII, data));
         }
         public string String()
         {
-            return networkEncoding.GetString(data);
+            return Encoding.UTF8.GetString(data);
         }
     }
     public class BaseEncode
@@ -168,15 +185,15 @@ namespace ClientServer
         }
         public NetworkEncoding GetnetworkEncoding()
         {
-            return new NetworkEncoding(Encoding.Convert(baseEncoding, networkEncoding, data));
+            return new NetworkEncoding(Encoding.Convert(Encoding.ASCII, Encoding.UTF8, data));
         }
         public BaseEncode(string data1)
         {
-            data = baseEncoding.GetBytes(data1);
+            data = Encoding.ASCII.GetBytes(data1);
         }
         public string String()
         {
-            return baseEncoding.GetString(data);
+            return Encoding.ASCII.GetString(data);
         }
     }
 }

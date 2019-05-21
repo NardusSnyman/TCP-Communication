@@ -6,29 +6,28 @@ using System.Net.Sockets;
 using System.Text;
 using System.Runtime;
 using System.Threading.Tasks;
-using static ClientServer.Utilities;
+using static ClientServer.SendRecieve;
 
 namespace ClientServer
 {
     public class Server
     {
-        public int port = 0;
+        public ConnectionArguments args;
         public Server()
         {
 
         }
-        public Server(int port1, Action<string> debug = null)
+        public Server(ConnectionArguments args1, Action<string> debug = null)
         {
-            port = port1;
+            args = args1;
         }
         public Action<string, int> debug;
         public TcpListener listener;
         public List<Command> commands;
         private Task task;
-        public byte ender = new NetworkEncoding(";").data[0];
         public void Start()
         {
-            listener = new TcpListener(IPAddress.Any, port);
+            listener = new TcpListener(IPAddress.Any, args.port);
                 listener.Start();
             
             if (debug == null)
@@ -44,12 +43,12 @@ namespace ClientServer
                 {
                     TcpClient client = listener.AcceptTcpClient();
                     debug.Invoke("connected", 1);
-                    var bytes = RecieveBytes(client, ender);
+                    var bytes = RecieveBytes(client, args.ender);
 
-                    debug.Invoke("message recieved", 1);
-                    ClientMessage cm = new ClientMessage(bytes);
+                    debug.Invoke("message recieved-" + bytes.data.Length, 1);
+                    ClientMessage cm = new ClientMessage(bytes, args.separator);
                     ServerMessage returnmsg = null;
-                    debug.Invoke("commands commencing", 1);
+                    debug.Invoke("commands commencing-" + cm.operation, 1);
                     for (int x = 0; x < commands.Count && returnmsg == null; x++)
                     {
                         Command command = commands[x];
@@ -64,9 +63,9 @@ namespace ClientServer
                         debug.Invoke("NO OPERATION FOUND BY THE NAME OF " + cm.operation, 3);
                     }
 
-                    var output = returnmsg.Bytes();
-                    debug.Invoke("sending bytes", 1);
-                    SendBytes(client, output, ender);
+                    var output = returnmsg.Bytes(args.separator);
+                    debug.Invoke("sending bytes-" + output.data.Length, 1);
+                    SendBytes(client, output, args.ender);
                     client.Close();
                     debug.Invoke("client closed", 1);
                 }
@@ -87,7 +86,6 @@ namespace ClientServer
     {
         public ConnectionArguments args;
         public Action<string, int> debug;
-        public byte ender = new NetworkEncoding(";").data[0];
         public ServerMessage Communicate(ClientMessage cm)
         {
             if (debug == null)
@@ -98,25 +96,27 @@ namespace ClientServer
                 });
             }
             TcpClient client = new TcpClient();
-            client.Connect(args.ip, args.port);
-            while (!client.Connected)
-            {
+                client.Connect(args.ip, args.port);
+                while (!client.Connected)
+                {
 
-            }
+                }
+
             debug.Invoke("connected", 1);
             
-            var input = cm.Bytes();
-            debug.Invoke("sending bytes " + input.String(), 1);
-            SendBytes(client, input, ender);
+            var input = cm.Bytes(args.separator);
+            debug.Invoke("sending bytes-" + input.String(), 1);
+            SendBytes(client, input, args.ender);
 
-            debug.Invoke("recieving bytes", 1);
-            var bytes = RecieveBytes(client, ender);
-                debug.Invoke("closing connection", 1);
+            
+            var bytes = RecieveBytes(client, args.ender);
+            debug.Invoke("recieving bytes-" + bytes.data.Length, 1);
+            debug.Invoke("closing connection", 1);
                 client.Close();
 
 
 
-            return new ServerMessage(bytes);
+            return new ServerMessage(bytes, args.separator);
         }
 
 
