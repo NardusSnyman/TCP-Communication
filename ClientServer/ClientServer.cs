@@ -12,7 +12,7 @@ namespace ClientServer
 {
     public class Server
     {
-        public ConnectionArguments args;
+        //INITIALIZATION
         public Server()
         {
 
@@ -21,10 +21,14 @@ namespace ClientServer
         {
             args = args1;
         }
-        public Action<string, int> debug;
-        public TcpListener listener;
-        public List<Command> commands;
-        private Task task;
+        //-----------------
+        public ConnectionArguments args;//connection arguments
+        
+        public Action<string, int> debug;//debugging invocation
+        public TcpListener listener;//server main listener
+        public List<Command> commands = new List<Command>();//server commands
+        private Task task;//server task
+        MemoryStream overread;//data storage for overread data
         public void Start()
         {
             listener = new TcpListener(IPAddress.Any, args.port);
@@ -43,7 +47,7 @@ namespace ClientServer
                 {
                     TcpClient client = listener.AcceptTcpClient();
                     debug.Invoke("connected", 1);
-                    var bytes = RecieveBytes(client, args.ender);
+                    var bytes = RecieveBytes(client, (z)=> { debug.Invoke("Packet:"+z, 1); }, args.ender, ref overread, args.buffer_size);
 
                     debug.Invoke("message recieved-" + bytes.data.Length, 1);
                     ClientMessage cm = new ClientMessage(bytes, args.separator);
@@ -65,7 +69,7 @@ namespace ClientServer
 
                     var output = returnmsg.Bytes(args.separator);
                     debug.Invoke("sending bytes-" + output.data.Length, 1);
-                    SendBytes(client, output, args.ender);
+                    SendBytes(client, output, (z) => { debug.Invoke("Packet:" + z, 1); }, args.ender, args.buffer_size);
                     client.Close();
                     debug.Invoke("client closed", 1);
                 }
@@ -73,19 +77,26 @@ namespace ClientServer
             }));
             task.Start();
             debug.Invoke("task started", 1);
-        }
+        }//start server
 
         
 
         public void Stop()
         {
             task.Dispose();
-        }
+        }//stop server
     }
     public class Client
     {
-        public ConnectionArguments args;
-        public Action<string, int> debug;
+        public ConnectionArguments args;//connection arguments
+        public Action<string, int> debug;//debugging invocation
+        MemoryStream overread;//data storage for overread data
+        //INITIALIZATION
+        public Client(ConnectionArguments args1)
+        {
+            args = args1;
+        }
+        //-----------------
         public ServerMessage Communicate(ClientMessage cm)
         {
             if (debug == null)
@@ -106,10 +117,10 @@ namespace ClientServer
             
             var input = cm.Bytes(args.separator);
             debug.Invoke("sending bytes-" + input.String(), 1);
-            SendBytes(client, input, args.ender);
+            SendBytes(client, input, (z) => { debug.Invoke("Packet:" + z, 1); }, args.ender, args.buffer_size);
 
             
-            var bytes = RecieveBytes(client, args.ender);
+            var bytes = RecieveBytes(client, (z) => { debug.Invoke("Packet:" + z, 1); }, args.ender, ref overread, args.buffer_size);
             debug.Invoke("recieving bytes-" + bytes.data.Length, 1);
             debug.Invoke("closing connection", 1);
                 client.Close();
@@ -117,12 +128,8 @@ namespace ClientServer
 
 
             return new ServerMessage(bytes, args.separator);
-        }
+        }//main form of communication
 
-
-        public Client(ConnectionArguments args1)
-        {
-            args = args1;
-        }
+        
     }
 }

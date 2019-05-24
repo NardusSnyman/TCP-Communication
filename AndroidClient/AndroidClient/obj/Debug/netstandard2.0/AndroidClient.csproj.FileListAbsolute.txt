@@ -10,3 +10,6 @@ C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\A
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\XamlC.stamp
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\bin\Debug\netstandard2.0\AndroidClass.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\bin\Debug\netstandard2.0\AndroidClass.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient\obj\Debug\netstandard2.0\AndroidClient.csproj.CopyComplete

@@ -3,5 +3,6 @@
   <PropertyGroup>
     <SelectedDevice>LGE LG-SP200</SelectedDevice>
     <AndroidDesignerPreferredTheme>Theme.DeviceDefault.Light.NoActionBar.Fullscreen</AndroidDesignerPreferredTheme>
+    <DefaultDevice>Android</DefaultDevice>
   </PropertyGroup>
 </Project>

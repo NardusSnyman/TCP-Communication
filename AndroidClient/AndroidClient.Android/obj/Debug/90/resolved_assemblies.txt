@@ -1,4 +1,5 @@
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\android\assets\AndroidClient.Android.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\android\assets\AndroidClass.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\android\assets\AndroidClient.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\android\assets\FormsViewGroup.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\android\assets\Java.Interop.dll

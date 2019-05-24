@@ -514,3 +514,9 @@ C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\A
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\stamp\_GenerateJavaStubs.stamp
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\stamp\_GeneratePackageManagerJava.stamp
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\stamp\_ResolveLibraryProjectImports.stamp
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\bin\Debug\AndroidClass.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\bin\Debug\AndroidClass.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\linksrc\AndroidClass.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\linksrc\AndroidClass.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\android\assets\AndroidClass.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClient\AndroidClient.Android\obj\Debug\90\android\assets\AndroidClass.pdb
