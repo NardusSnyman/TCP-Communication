@@ -12,7 +12,7 @@ namespace ClientServer
 {
     public class Server
     {
-        public ConnectionArguments args;
+        //INITIALIZATION
         public Server()
         {
 
@@ -21,11 +21,14 @@ namespace ClientServer
         {
             args = args1;
         }
-        public Action<string, int> debug;
-        public TcpListener listener;
-        public List<Command> commands;
-        private Task task;
-        MemoryStream overread;
+        //-----------------
+        public ConnectionArguments args;//connection arguments
+        
+        public Action<string, int> debug;//debugging invocation
+        public TcpListener listener;//server main listener
+        public List<Command> commands = new List<Command>();//server commands
+        private Task task;//server task
+        MemoryStream overread;//data storage for overread data
         public void Start()
         {
             listener = new TcpListener(IPAddress.Any, args.port);
@@ -74,20 +77,26 @@ namespace ClientServer
             }));
             task.Start();
             debug.Invoke("task started", 1);
-        }
+        }//start server
 
         
 
         public void Stop()
         {
             task.Dispose();
-        }
+        }//stop server
     }
     public class Client
     {
-        public ConnectionArguments args;
-        public Action<string, int> debug;
-        MemoryStream overread;
+        public ConnectionArguments args;//connection arguments
+        public Action<string, int> debug;//debugging invocation
+        MemoryStream overread;//data storage for overread data
+        //INITIALIZATION
+        public Client(ConnectionArguments args1)
+        {
+            args = args1;
+        }
+        //-----------------
         public ServerMessage Communicate(ClientMessage cm)
         {
             if (debug == null)
@@ -119,12 +128,8 @@ namespace ClientServer
 
 
             return new ServerMessage(bytes, args.separator);
-        }
+        }//main form of communication
 
-
-        public Client(ConnectionArguments args1)
-        {
-            args = args1;
-        }
+        
     }
 }
