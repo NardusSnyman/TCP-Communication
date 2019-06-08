@@ -10,11 +10,13 @@ namespace Server
 
         static void Main(string[] args)
         {
-            ClientServer.Server server = new ClientServer.Server(new ConnectionArguments("", 998, '@', Convert.ToByte(';')));
-            server.debug = new Action<string, int>((string e, int sum)=>
+            ClientServer.Server server = new ClientServer.Server(new ConnectionArguments("", 998, '@', Convert.ToByte(';'), 1024))
             {
-                Console.WriteLine(e);
-            });
+                debug = new Action<string, int>((string e, int sum) =>
+                {
+                    Console.WriteLine(e);
+                })
+            };
             var cmd1 = new Command();
             cmd1.operation = "repeat";
             cmd1.action = new Func<ClientMessage, ServerMessage>((o) =>

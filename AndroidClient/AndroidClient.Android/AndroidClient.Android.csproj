@@ -101,13 +101,9 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AndroidClass\AndroidClass.csproj">
+    <ProjectReference Include="..\..\AndroidClass\NetStandardPack.csproj">
       <Project>{b2a9a5c3-308c-4af1-bfec-c9314d1fd388}</Project>
-      <Name>AndroidClass</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AndroidClient\AndroidClient.csproj">
-      <Project>{86620FB8-8231-48D4-A908-B7177D42CE23}</Project>
-      <Name>AndroidClient</Name>
+      <Name>NetStandardPack</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

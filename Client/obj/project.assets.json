@@ -685,6 +685,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.1": [
+      "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\DotNetCore.csproj",
       "Microsoft.NETCore.App >= 2.1.0"
     ]
   },
@@ -720,7 +721,11 @@
       },
       "frameworks": {
         "netcoreapp2.1": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\DotNetCore.csproj": {
+              "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\DotNetCore.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -746,5 +751,16 @@
         "warn": true
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1105",
+      "level": "Error",
+      "message": "Unable to find project information for 'C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\DotNetCore.csproj'. Inside Visual Studio, this may be because the project is unloaded or not part of current solution so please run a restore from command-line. Otherwise the project file may be invalid or missing targets required for restore.",
+      "libraryId": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\DotNetCore.csproj",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v2.1"
+      ]
+    }
+  ]
 }

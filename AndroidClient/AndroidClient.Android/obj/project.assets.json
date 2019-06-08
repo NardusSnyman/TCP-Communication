@@ -840,21 +840,11 @@
           "build/Xamarin.Forms.targets": {}
         }
       },
-      "AndroidClass/1.0.0": {
-        "type": "project",
-        "framework": ".NETStandard,Version=v2.0",
-        "compile": {
-          "bin/placeholder/AndroidClass.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/AndroidClass.dll": {}
-        }
-      },
       "AndroidClient/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
-          "AndroidClass": "1.0.0",
+          "NetStandardPack": "1.0.0",
           "Xamarin.Essentials": "1.0.1",
           "Xamarin.Forms": "4.0.0.346134-pre9"
         },
@@ -863,6 +853,16 @@
         },
         "runtime": {
           "bin/placeholder/AndroidClient.dll": {}
+        }
+      },
+      "NetStandardPack/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/NetStandardPack.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/NetStandardPack.dll": {}
         }
       }
     }
@@ -1982,21 +1982,21 @@
         "xamarin.forms.nuspec"
       ]
     },
-    "AndroidClass/1.0.0": {
-      "type": "project",
-      "path": "../../AndroidClass/AndroidClass.csproj",
-      "msbuildProject": "../../AndroidClass/AndroidClass.csproj"
-    },
     "AndroidClient/1.0.0": {
       "type": "project",
       "path": "../AndroidClient/AndroidClient.csproj",
       "msbuildProject": "../AndroidClient/AndroidClient.csproj"
+    },
+    "NetStandardPack/1.0.0": {
+      "type": "project",
+      "path": "../../AndroidClass/NetStandardPack.csproj",
+      "msbuildProject": "../../AndroidClass/NetStandardPack.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "MonoAndroid,Version=v9.0": [
-      "AndroidClass >= 1.0.0",
       "AndroidClient >= 1.0.0",
+      "NetStandardPack >= 1.0.0",
       "Xamarin.Android.Support.Core.Utils >= 28.0.0.1",
       "Xamarin.Android.Support.CustomTabs >= 28.0.0.1",
       "Xamarin.Android.Support.Design >= 28.0.0.1",
@@ -2040,8 +2040,8 @@
       "frameworks": {
         "monoandroid90": {
           "projectReferences": {
-            "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj": {
-              "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj"
+            "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj": {
+              "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj"
             },
             "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClient\\AndroidClient\\AndroidClient.csproj": {
               "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClient\\AndroidClient\\AndroidClient.csproj"

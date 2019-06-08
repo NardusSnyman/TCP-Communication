@@ -1,0 +1,1 @@
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat.UWP\CrossPlat.UWP.csproj;x86

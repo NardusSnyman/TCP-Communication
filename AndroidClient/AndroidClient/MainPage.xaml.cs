@@ -17,7 +17,7 @@ namespace AndroidClient
         public MainPage()
         {
             InitializeComponent();
-            Client client = new Client(new ConnectionArguments("192.168.0.188", 998, '@', Convert.ToByte(';')));
+            Client client = new Client(new ConnectionArguments("192.168.0.188", 998, '@', Convert.ToByte(';'), 1024));
             client.debug = new Action<string, int>((o, a) =>
             {
                 

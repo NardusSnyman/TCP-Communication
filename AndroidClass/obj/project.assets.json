@@ -186,9 +186,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj",
-      "projectName": "AndroidClass",
-      "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj",
+      "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj",
+      "projectName": "NetStandardPack",
+      "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj",
       "packagesPath": "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\obj\\",
       "projectStyle": "PackageReference",

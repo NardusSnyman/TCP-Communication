@@ -4,12 +4,12 @@
     "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClient\\AndroidClient.Android\\AndroidClient.Android.csproj": {}
   },
   "projects": {
-    "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj": {
+    "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj",
-        "projectName": "AndroidClass",
-        "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj",
+        "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj",
+        "projectName": "NetStandardPack",
+        "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj",
         "packagesPath": "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\obj\\",
         "projectStyle": "PackageReference",
@@ -86,8 +86,8 @@
         "frameworks": {
           "monoandroid90": {
             "projectReferences": {
-              "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj": {
-                "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj"
+              "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj": {
+                "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj"
               },
               "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClient\\AndroidClient\\AndroidClient.csproj": {
                 "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClient\\AndroidClient\\AndroidClient.csproj"
@@ -167,8 +167,8 @@
         "frameworks": {
           "netstandard2.0": {
             "projectReferences": {
-              "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj": {
-                "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj"
+              "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj": {
+                "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj"
               }
             }
           }

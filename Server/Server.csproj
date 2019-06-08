@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClientServer\ClientServer.csproj" />
+    <ProjectReference Include="..\ClientServer\DotNetCore.csproj" />
   </ItemGroup>
 
 </Project>

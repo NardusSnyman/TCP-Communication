@@ -31,7 +31,11 @@
         },
         "frameworks": {
           "netcoreapp2.1": {
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\DotNetCore.csproj": {
+                "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\ClientServer\\DotNetCore.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

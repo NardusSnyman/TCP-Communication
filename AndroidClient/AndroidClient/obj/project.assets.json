@@ -64,14 +64,14 @@
           "build/Xamarin.Forms.targets": {}
         }
       },
-      "AndroidClass/1.0.0": {
+      "NetStandardPack/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "compile": {
-          "bin/placeholder/AndroidClass.dll": {}
+          "bin/placeholder/NetStandardPack.dll": {}
         },
         "runtime": {
-          "bin/placeholder/AndroidClass.dll": {}
+          "bin/placeholder/NetStandardPack.dll": {}
         }
       }
     }
@@ -549,16 +549,16 @@
         "xamarin.forms.nuspec"
       ]
     },
-    "AndroidClass/1.0.0": {
+    "NetStandardPack/1.0.0": {
       "type": "project",
-      "path": "../../AndroidClass/AndroidClass.csproj",
-      "msbuildProject": "../../AndroidClass/AndroidClass.csproj"
+      "path": "../../AndroidClass/NetStandardPack.csproj",
+      "msbuildProject": "../../AndroidClass/NetStandardPack.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
-      "AndroidClass >= 1.0.0",
       "NETStandard.Library >= 2.0.3",
+      "NetStandardPack >= 1.0.0",
       "Xamarin.Essentials >= 1.0.1",
       "Xamarin.Forms >= 4.0.0.346134-pre9"
     ]
@@ -596,8 +596,8 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj": {
-              "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\AndroidClass.csproj"
+            "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj": {
+              "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\AndroidClass\\NetStandardPack.csproj"
             }
           }
         }

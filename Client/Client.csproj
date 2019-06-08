@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="ClientServer">
-      <HintPath>..\ClientServer\bin\Debug\netcoreapp2.0\ClientServer.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\ClientServer\DotNetCore.csproj" />
   </ItemGroup>
 
 </Project>

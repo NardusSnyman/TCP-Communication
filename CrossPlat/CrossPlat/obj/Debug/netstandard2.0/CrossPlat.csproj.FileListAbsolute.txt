@@ -1,0 +1,15 @@
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\CrossPlat.csprojAssemblyReference.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\App.xaml.g.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\MainPage.xaml.g.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\CrossPlat.csproj.CoreCompileInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\CrossPlat.AssemblyInfoInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\CrossPlat.AssemblyInfo.cs
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\bin\Debug\netstandard2.0\CrossPlat.deps.json
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\bin\Debug\netstandard2.0\CrossPlat.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\bin\Debug\netstandard2.0\CrossPlat.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\bin\Debug\netstandard2.0\NetStandardPack.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\bin\Debug\netstandard2.0\NetStandardPack.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\XamlC.stamp
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\CrossPlat.csproj.CopyComplete
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\CrossPlat.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\CrossPlat\CrossPlat\obj\Debug\netstandard2.0\CrossPlat.pdb

@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AndroidClass\AndroidClass.csproj" />
+    <ProjectReference Include="..\..\AndroidClass\NetStandardPack.csproj" />
   </ItemGroup>
 </Project>
