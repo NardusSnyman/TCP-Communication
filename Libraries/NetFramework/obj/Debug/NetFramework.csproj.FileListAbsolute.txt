@@ -1,0 +1,6 @@
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\bin\Debug\NetFramework.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\bin\Debug\NetFramework.pdb
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\obj\Debug\NetFramework.csprojAssemblyReference.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\obj\Debug\NetFramework.csproj.CoreCompileInputs.cache
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\obj\Debug\NetFramework.dll
+C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\obj\Debug\NetFramework.pdb
