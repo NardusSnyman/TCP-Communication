@@ -9,20 +9,20 @@ namespace ClientServer
     {
         public string ip;
         public int port;
-        public char separator;
-        public byte ender;
         public int buffer_size;
         public ConnectionArguments()
         {
 
         }
-        public ConnectionArguments(string ip, int port, char separator, byte ender, int buffer_size)
+        public ConnectionArguments(string ip, int port, int buffer_size)
         {
             this.ip = ip;
             this.port = port;
-            this.ender = ender;
-            this.separator = separator;
             this.buffer_size = buffer_size;
+        }
+        public static ConnectionArguments fromLocal(int port, int buffer_size)
+        {
+            return new ConnectionArguments(Dns.GetHostName(), port, buffer_size);
         }
     }
 }

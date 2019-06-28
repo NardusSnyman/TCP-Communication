@@ -882,25 +882,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\": {},
+    "C:\\Users\\nicho\\.nuget\\packages\\": {},
     "C:\\Microsoft\\Xamarin\\NuGet\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetCore\\DotNetCore.csproj",
+      "projectUniqueName": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetCore\\DotNetCore.csproj",
       "projectName": "DotNetCore",
-      "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetCore\\DotNetCore.csproj",
-      "packagesPath": "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetCore\\obj\\",
+      "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetCore\\DotNetCore.csproj",
+      "packagesPath": "C:\\Users\\nicho\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetCore\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\nicho_fmwix7m\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\nicho\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],

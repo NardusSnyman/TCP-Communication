@@ -1,10 +1,6 @@
 ﻿using ClientServer;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace CrossPlat
@@ -17,13 +13,13 @@ namespace CrossPlat
         public MainPage()
         {
             InitializeComponent();
-            Client client = new Client(new ConnectionArguments("192.168.0.188", 998, '@', Convert.ToByte(';'), 1024));
-            client.debug = new Action<string, int>((o, a) =>
+            Client client = new Client(ConnectionArguments.fromLocal(998, 1024));
+            client.debug = new Action<string>((o) =>
             {
 
             });
-            var msg = client.Communicate(new ClientMessage("repeat", "hello"));
-            txt.Text = msg.message;
+            var msg = client.Communicate("repeat", "hello");
+            txt.Text = msg;
         }
     }
 }

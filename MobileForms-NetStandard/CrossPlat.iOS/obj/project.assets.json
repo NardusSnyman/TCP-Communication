@@ -150,6 +150,7 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
+          "DotNetStandard": "1.0.0",
           "Xamarin.Essentials": "1.0.1",
           "Xamarin.Forms": "4.0.0.346134-pre9"
         },
@@ -158,6 +159,16 @@
         },
         "runtime": {
           "bin/placeholder/CrossPlat.dll": {}
+        }
+      },
+      "DotNetStandard/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/DotNetStandard.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DotNetStandard.dll": {}
         }
       }
     },
@@ -310,6 +321,7 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
+          "DotNetStandard": "1.0.0",
           "Xamarin.Essentials": "1.0.1",
           "Xamarin.Forms": "4.0.0.346134-pre9"
         },
@@ -318,6 +330,16 @@
         },
         "runtime": {
           "bin/placeholder/CrossPlat.dll": {}
+        }
+      },
+      "DotNetStandard/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/DotNetStandard.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DotNetStandard.dll": {}
         }
       }
     },
@@ -470,6 +492,7 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
+          "DotNetStandard": "1.0.0",
           "Xamarin.Essentials": "1.0.1",
           "Xamarin.Forms": "4.0.0.346134-pre9"
         },
@@ -478,6 +501,16 @@
         },
         "runtime": {
           "bin/placeholder/CrossPlat.dll": {}
+        }
+      },
+      "DotNetStandard/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/DotNetStandard.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DotNetStandard.dll": {}
         }
       }
     },
@@ -630,6 +663,7 @@
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
+          "DotNetStandard": "1.0.0",
           "Xamarin.Essentials": "1.0.1",
           "Xamarin.Forms": "4.0.0.346134-pre9"
         },
@@ -638,6 +672,16 @@
         },
         "runtime": {
           "bin/placeholder/CrossPlat.dll": {}
+        }
+      },
+      "DotNetStandard/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/DotNetStandard.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DotNetStandard.dll": {}
         }
       }
     }
@@ -976,6 +1020,11 @@
       "type": "project",
       "path": "../CrossPlat/CrossPlat.csproj",
       "msbuildProject": "../CrossPlat/CrossPlat.csproj"
+    },
+    "DotNetStandard/1.0.0": {
+      "type": "project",
+      "path": "../../Libraries/NetStandard/DotNetStandard.csproj",
+      "msbuildProject": "../../Libraries/NetStandard/DotNetStandard.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -986,24 +1035,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\": {},
+    "C:\\Users\\nicho\\.nuget\\packages\\": {},
     "C:\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
+      "projectUniqueName": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
       "projectName": "CrossPlat.iOS",
-      "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
-      "packagesPath": "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\obj\\",
+      "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
+      "packagesPath": "C:\\Users\\nicho\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\nicho_fmwix7m\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\nicho\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
@@ -1017,8 +1066,8 @@
       "frameworks": {
         "xamarinios10": {
           "projectReferences": {
-            "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\CrossPlat.csproj": {
-              "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\CrossPlat.csproj"
+            "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\CrossPlat.csproj": {
+              "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\CrossPlat.csproj"
             }
           }
         }

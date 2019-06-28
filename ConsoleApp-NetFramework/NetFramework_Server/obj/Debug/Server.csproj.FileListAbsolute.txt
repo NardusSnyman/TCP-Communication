@@ -1,0 +1,10 @@
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\bin\Debug\Server.exe.config
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\bin\Debug\Server.exe
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\bin\Debug\Server.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\bin\Debug\NetFramework.dll
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\bin\Debug\NetFramework.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\obj\Debug\Server.csprojAssemblyReference.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\obj\Debug\Server.csproj.CoreCompileInputs.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\obj\Debug\Server.csproj.CopyComplete
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\obj\Debug\Server.exe
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Server\obj\Debug\Server.pdb

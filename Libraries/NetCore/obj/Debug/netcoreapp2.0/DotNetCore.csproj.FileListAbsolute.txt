@@ -1,0 +1,9 @@
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\bin\Debug\netcoreapp2.0\DotNetCore.deps.json
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\bin\Debug\netcoreapp2.0\DotNetCore.dll
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\bin\Debug\netcoreapp2.0\DotNetCore.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\obj\Debug\netcoreapp2.0\DotNetCore.csprojAssemblyReference.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\obj\Debug\netcoreapp2.0\DotNetCore.csproj.CoreCompileInputs.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\obj\Debug\netcoreapp2.0\DotNetCore.AssemblyInfoInputs.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\obj\Debug\netcoreapp2.0\DotNetCore.AssemblyInfo.cs
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\obj\Debug\netcoreapp2.0\DotNetCore.dll
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetCore\obj\Debug\netcoreapp2.0\DotNetCore.pdb

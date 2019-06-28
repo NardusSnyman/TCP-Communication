@@ -10,22 +10,20 @@ namespace Server
 
         static void Main(string[] args)
         {
-            ClientServer.Server server = new ClientServer.Server(new ConnectionArguments("", 998, '@', Convert.ToByte(';'), 1024))
+            ClientServer.Server server = new ClientServer.Server(ConnectionArguments.fromLocal(998, 1024));
+            server.commands = new System.Collections.Generic.List<Command>()
             {
-                debug = new Action<string, int>((string e, int sum) =>
+                new Command("repeat", (string msg) =>
                 {
-                    Console.WriteLine(e);
+                    return msg + " (ECHO ECHo ECho Echo echo)";
                 })
             };
-            var cmd1 = new Command();
-            cmd1.operation = "repeat";
-            cmd1.action = new Func<ClientMessage, ServerMessage>((o) =>
+            server.debug += (string mess) =>
             {
-                Console.WriteLine("XX=" + o.message);
-                return new ServerMessage("xx:" + o.message, true);
-            });
-            server.commands = new System.Collections.Generic.List<Command>() { cmd1 };
+                Console.WriteLine(mess);
+            };
             server.Start();
+            Console.WriteLine("console started");
             Console.ReadLine();
         }
     }

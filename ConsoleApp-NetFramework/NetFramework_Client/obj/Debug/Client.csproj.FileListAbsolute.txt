@@ -1,0 +1,10 @@
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\bin\Debug\Client.exe.config
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\bin\Debug\Client.exe
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\bin\Debug\Client.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\bin\Debug\NetFramework.dll
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\bin\Debug\NetFramework.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\obj\Debug\Client.csprojAssemblyReference.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\obj\Debug\Client.csproj.CopyComplete
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\obj\Debug\Client.exe
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleApp-NetFramework\NetFramework_Client\obj\Debug\Client.pdb

@@ -11,6 +11,7 @@ using System.Threading;
 
 namespace ClientServer
 {
+
     public class Server
     {
         //INITIALIZATION
@@ -18,75 +19,68 @@ namespace ClientServer
         {
 
         }
-        public Server(ConnectionArguments args1, Action<TcpClient> clientConnected = null, Action<string> debug = null)
+        public Server(ConnectionArguments args1)
         {
             args = args1;
-            this.clientConnected = clientConnected;
         }
         //-----------------
         public ConnectionArguments args;//connection arguments
         
-        public Action<string, int> debug;//debugging invocation
         public TcpListener listener;//server main listener
         public List<Command> commands = new List<Command>();//server commands
-        Action<TcpClient> clientConnected;
-        private Task task;//server task
-        MemoryStream overread;//data storage for overread data
+        Task task;//server task
+        BaseEncode overread;//data storage for overread data
+        public Action<string> debug;
+
         public void Start()
         {
+            ///////
+
             listener = new TcpListener(IPAddress.Any, args.port);
                 listener.Start();
-            
-            if (debug == null)
-            {
-                debug = new Action<string, int>((string e, int a)=>{//int a-states  1=Main Debugger 2=error debugger 3=extra detail debugger
-                });
-            }
-            debug.Invoke("listener started", 1);
+            debug?.Invoke("listener started");
+
             task = new Task(new Action(() =>
             {
 
                 while (1 == 1)
                 {
+                    Start:
+                    
+                    ///-----
                     TcpClient client = listener.AcceptTcpClient();//accept new client
-                    if (clientConnected != null)
-                        clientConnected(client);
-                    debug.Invoke("connected", 1);
-                    //recieve packets until "arg.ender" final char is read, write packet count, and return bytes not part of operation
-                    var bytes = SendRecieveUtil.RecieveBytes(client, (z, b)=> { debug.Invoke("Packet:"+z, 3); }, args.ender, ref overread, args.buffer_size);
-
-                    debug.Invoke("message recieved-" + bytes.data.Length, 1);
-
-                    ClientMessage cm = new ClientMessage(bytes, args.separator);//create a new client message with byte data
-                    ServerMessage returnmsg = null;
-                    debug.Invoke("commands commencing-" + cm.operation, 1);
-                    for (int x = 0; x < commands.Count && returnmsg == null; x++)//find command with operation name
+                    debug?.Invoke("client connected");
+                    debug?.Invoke("attempting read...");
+                    var bytes = SendRecieveUtil.RecieveBytes(client, ref overread, args, debug);
+                    debug?.Invoke("read data. parsing");
+                    if (bytes == null)//encoding error
                     {
-                        Command command = commands[x];
-                        if (command.operation == cm.operation)
-                        {
-                            debug.Invoke($"Operation found", 3);
-                            returnmsg = command.action.Invoke(cm);//return server message
-                        }
-                        else debug.Invoke($"{command.operation} != {cm.operation}", 3);
+                        debug?.Invoke("read is null");
+                        client.Dispose();
+                        goto Start;
                     }
-                    if (returnmsg == null)//command does not exist
+                    debug?.Invoke("checking commands list...");
+                    var parts = bytes.GetString().Split(SendRecieveUtil.separator);
+                    string operation = parts[0];
+                    string data = parts[1];
+                    string output = "null";
+                    for(int i = 0; i < commands.Count; i++)
                     {
-                        returnmsg = new ServerMessage("", false);
-                        debug.Invoke("NO OPERATION FOUND BY THE NAME OF " + cm.operation, 2);
+                        Command cmd = commands[i];
+                        if (cmd.operation == operation)
+                            output = cmd.action.Invoke(data);
                     }
 
-                    var output = returnmsg.Bytes(args.separator);//get bytes of server message
-                    debug.Invoke("sending bytes-" + output.data.Length, 1);
-                    //send bytes, debug packet count, and add an ender character
-                    SendRecieveUtil.SendBytes(client, output, (z) => { debug.Invoke("Packet:" + z, 3); }, args.ender, args.buffer_size);
+                    debug?.Invoke("sending data");
+                    SendRecieveUtil.SendBytes(client, new BaseEncode(output), args, debug);
+                    debug?.Invoke("client disconnected");
                     client.Close();
-                    debug.Invoke("client closed", 1);
+                    
                 }
                 
             }));
             task.Start();
-            debug.Invoke("task started", 1);
+           
         }//start server
 
         
@@ -98,84 +92,81 @@ namespace ClientServer
     }
     public class Client
     {
+       
         public ConnectionArguments args;//connection arguments
-        public Action<string, int> debug;//debugging invocation
-        MemoryStream overread;//data storage for overread data
-        //INITIALIZATION
+        BaseEncode overread;//data storage for overread data
+        public Action<string> debug;
+       
         public Client(ConnectionArguments args1)
         {
             args = args1;
         }
         //-----------------
-        public ServerMessage Communicate(ClientMessage cm)
-        {
-            if (debug == null)
-            {
-                debug = new Action<string, int>((p, q) =>//int a-states  1=Main Debugger 2=error debugger 3=extra detail debugger
-                {
+        int attempts = 4;
+        int temp = 0;
+        public string Communicate(string operation, string message)
+         {
+             TcpClient client = new TcpClient();
+             start:
+             try
+             {
+                 client.Connect(args.ip, args.port);
+                debug?.Invoke("connected");
+             }
+             catch (Exception e)
+             {
+                debug?.Invoke("server offline");
+                Thread.Sleep(1200);
+                 temp++;
+                 if(temp > attempts)
+                 {
+                     temp = 0;
+                    return "";
+                 }
+                
+                 goto start;
+             }
+            debug?.Invoke("formatting data");
+            var input = new BaseEncode(operation + SendRecieveUtil.separator.ToString() + message);
+            debug?.Invoke("sending data");
+            SendRecieveUtil.SendBytes(client, input, args, debug);
 
-                });
-            }
+            debug?.Invoke("attempting read...");
+             var data = SendRecieveUtil.RecieveBytes(client, ref overread, args, debug);
+            debug?.Invoke("read data. parsing");
+            return data.GetString();
+         }//main form of communication*/
+
+        public void ProgressiveDataRetrieval(string operation, string message, Action<char[], bool> data)
+        {
             TcpClient client = new TcpClient();
-            start:
+        start:
             try
             {
                 client.Connect(args.ip, args.port);
+                debug?.Invoke("connected");
             }
             catch (Exception e)
             {
+                debug?.Invoke("server offline");
                 Thread.Sleep(1200);
-                debug.Invoke("attempting connection... || " + e.Message, 2);
+                temp++;
+                if (temp > attempts)
+                {
+                    temp = 0;
+                    return;
+                }
+
                 goto start;
             }
-            debug.Invoke("connected", 1);
-            //get bytes of client message
-            var input = cm.Bytes(args.separator);
-            debug.Invoke("sending bytes-" + input.String(), 1);
-            //send bytes, debug packet count, and add an ender character
-            SendRecieveUtil.SendBytes(client, input, (z) => { debug.Invoke("Packet:" + z, 3); }, args.ender, args.buffer_size);
+            debug?.Invoke("formatting data");
+            var input = new BaseEncode(operation + SendRecieveUtil.separator.ToString() + message);
+            debug?.Invoke("sending data");
+            SendRecieveUtil.SendBytes(client, input, args, debug);
 
-            //recieve packets until "arg.ender" final char is read, write packet count, and return bytes not part of operation
-            var bytes = SendRecieveUtil.RecieveBytes(client, (z, b) => { debug.Invoke("Packet:" + z, 3); }, args.ender, ref overread, args.buffer_size);
-            debug.Invoke("recieving bytes-" + bytes.data.Length, 1);
-            debug.Invoke("closing connection", 1);
-                client.Close();
-
-
-
-            return new ServerMessage(bytes, args.separator);
-        }//main form of communication
-
-        public void PregressiveDataStream(ClientMessage cm, Action<BaseEncode> read)
-        {
-            if (debug == null)
-            {
-                debug = new Action<string, int>((p, q) =>
-                {
-
-                });
-            }
-            TcpClient client = new TcpClient();
-            client.Connect(args.ip, args.port);
-            while (!client.Connected)
-            {
-
-            }
-
-            debug.Invoke("connected", 1);
-            //get bytes of client message
-            var input = cm.Bytes(args.separator);
-            debug.Invoke("sending bytes-" + input.String(), 1);
-            //send bytes, debug packet count, and add an ender character
-            SendRecieveUtil.SendBytes(client, input, (z) => { debug.Invoke("Packet:" + z, 3); }, args.ender, args.buffer_size);
-
-            //recieve packets until "arg.ender" final char is read, write packet count, and return bytes not part of operation
-            var bytes = SendRecieveUtil.RecieveBytes(client, (z, b) => { debug.Invoke("Packet:" + z, 3); read(b); }, args.ender, ref overread, args.buffer_size);
-            debug.Invoke("recieving bytes-" + bytes.data.Length, 1);
-            debug.Invoke("closing connection", 1);
-            client.Close();
-
-
-        }//main form of communication
+            debug?.Invoke("attempting read...");
+            SendRecieveUtil.RecieveBytes(client, ref overread, args, debug, data);
+            debug?.Invoke("read data. parsing");
+        }//main form of communication*/
     }
 }

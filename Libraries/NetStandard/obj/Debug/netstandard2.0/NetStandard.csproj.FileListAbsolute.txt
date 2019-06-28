@@ -7,3 +7,12 @@ C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\ob
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\NetStandard.AssemblyInfo.cs
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\NetStandard.dll
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\AndroidClass\obj\Debug\netstandard2.0\NetStandard.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\bin\Debug\netstandard2.0\NetStandard.deps.json
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\bin\Debug\netstandard2.0\NetStandard.dll
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\bin\Debug\netstandard2.0\NetStandard.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\obj\Debug\netstandard2.0\NetStandard.csprojAssemblyReference.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\obj\Debug\netstandard2.0\NetStandard.csproj.CoreCompileInputs.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\obj\Debug\netstandard2.0\NetStandard.AssemblyInfoInputs.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\obj\Debug\netstandard2.0\NetStandard.AssemblyInfo.cs
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\obj\Debug\netstandard2.0\NetStandard.dll
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetStandard\obj\Debug\netstandard2.0\NetStandard.pdb

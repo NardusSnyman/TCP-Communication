@@ -16,7 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Command.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConnectionArguments.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EncodingClasses.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Messages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SendRecieveUtil.cs" />
   </ItemGroup>
 </Project>

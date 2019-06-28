@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v2.1": {
       "Server/1.0.0": {
         "dependencies": {
-          "ClientServer": "1.0.0"
+          "DotNetCore": "1.0.0"
         },
         "runtime": {
           "Server.dll": {}
@@ -20,12 +20,12 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "ClientServer/1.0.0": {
+      "DotNetCore/1.0.0": {
         "dependencies": {
           "System.Text.Encoding": "4.3.0"
         },
         "runtime": {
-          "ClientServer.dll": {}
+          "DotNetCore.dll": {}
         }
       }
     }
@@ -50,7 +50,7 @@
       "path": "system.text.encoding/4.3.0",
       "hashPath": "system.text.encoding.4.3.0.nupkg.sha512"
     },
-    "ClientServer/1.0.0": {
+    "DotNetCore/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ClientServer.EncodingClasses;
 
 namespace Client
 {
@@ -11,15 +12,23 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            ClientServer.Client client = new ClientServer.Client(new ConnectionArguments("192.168.0.188", 998, '@', Convert.ToByte(';'), 1024))
+            var arguments = ConnectionArguments.fromLocal(998, 1024);
+            Console.WriteLine($"ip: {arguments.ip}");
+            Console.WriteLine($"port: {arguments.port}");
+            ClientServer.Client client = new ClientServer.Client(arguments);
+            client.debug += (string mess) =>
             {
-                debug = new Action<string, int>((o, a) =>
-                {
-                    Console.WriteLine(o);
-                })
+                Console.WriteLine(mess);
             };
-            var msg = client.Communicate(new ClientMessage("repeat", "hello"));
-            Console.WriteLine(msg.message);
+            string uni = Console.ReadLine();
+            var bas = new BaseEncode(uni);
+            Console.WriteLine(bas.GetNetworkEncoding().GetRawStringWithSeparator(" "));
+            Console.WriteLine(bas.GetNetworkEncoding().GetOriginalStringWithSeparator(" "));
+            Console.WriteLine(bas.GetNetworkEncoding().GetBaseEncode().GetString());
+            Console.ReadKey();
+            Console.WriteLine($"Communiating...");
+            var msg = client.Communicate("repeat", "hello");
+            Console.WriteLine(msg);
             Console.ReadLine();
         }
     }

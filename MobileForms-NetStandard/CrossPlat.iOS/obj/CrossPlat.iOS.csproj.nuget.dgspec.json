@@ -1,24 +1,78 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj": {}
+    "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj": {
+    "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetStandard\\DotNetStandard.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
+        "projectUniqueName": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetStandard\\DotNetStandard.csproj",
+        "projectName": "DotNetStandard",
+        "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetStandard\\DotNetStandard.csproj",
+        "packagesPath": "C:\\Users\\nicho\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetStandard\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\nicho\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
         "projectName": "CrossPlat.iOS",
-        "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
-        "packagesPath": "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat.iOS\\obj\\",
+        "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\CrossPlat.iOS.csproj",
+        "packagesPath": "C:\\Users\\nicho\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat.iOS\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\nicho_fmwix7m\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\nicho\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -32,8 +86,8 @@
         "frameworks": {
           "xamarinios10": {
             "projectReferences": {
-              "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\CrossPlat.csproj": {
-                "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\CrossPlat.csproj"
+              "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\CrossPlat.csproj": {
+                "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\CrossPlat.csproj"
               }
             }
           }
@@ -65,21 +119,21 @@
         }
       }
     },
-    "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\CrossPlat.csproj": {
+    "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\CrossPlat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\CrossPlat.csproj",
+        "projectUniqueName": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\CrossPlat.csproj",
         "projectName": "CrossPlat",
-        "projectPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\CrossPlat.csproj",
-        "packagesPath": "C:\\Users\\nicho_fmwix7m\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\nicho_fmwix7m\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileApp-NetStandard\\CrossPlat\\obj\\",
+        "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\CrossPlat.csproj",
+        "packagesPath": "C:\\Users\\nicho\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\MobileForms-NetStandard\\CrossPlat\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\nicho_fmwix7m\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\nicho\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -92,7 +146,11 @@
         },
         "frameworks": {
           "netstandard2.0": {
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetStandard\\DotNetStandard.csproj": {
+                "projectPath": "C:\\Users\\nicho\\Documents\\GitHub\\DotNet-TCP-Communication\\Libraries\\NetStandard\\DotNetStandard.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
