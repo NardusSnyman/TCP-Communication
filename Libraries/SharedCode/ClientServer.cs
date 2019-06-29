@@ -61,17 +61,24 @@ namespace ClientServer
                     }
                     debug?.Invoke("checking commands list...");
                     var parts = bytes.GetRawString().Split(new string[] { SendRecieveUtil.separator }, StringSplitOptions.None);
-
+                    debug?.Invoke("operation...");
                     string operation = new NetworkEncoding(parts[0]).GetBaseEncode().GetString();
+                    debug?.Invoke("data...");
                     BaseEncode data =new NetworkEncoding(parts[1]).GetBaseEncode();
-                    BaseEncode output = new BaseEncode("");
+                    debug?.Invoke("command=" + operation);
+                    bool found = false;
+                    BaseEncode output = new BaseEncode("NULL");
                     for(int i = 0; i < commands.Count; i++)
                     {
                         Command cmd = commands[i];
                         if (cmd.operation == operation)
+                        {
                             output = cmd.action.Invoke(data);
+                            found = true;
+                        }
                     }
-
+                    if(!found)
+                        debug?.Invoke("command not found");
                     debug?.Invoke("sending data");
                     SendRecieveUtil.SendBytes(client, output.GetNetworkEncoding(), args, debug);
                     debug?.Invoke("client disconnected");

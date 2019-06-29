@@ -11,12 +11,13 @@ namespace Server
 
         static void Main(string[] args)
         {
-            ClientServer.Server server = new ClientServer.Server(ConnectionArguments.fromLocal(998, 3072));
+            ClientServer.Server server = new ClientServer.Server(ConnectionArguments.fromLocal(998, 2048, TimeSpan.FromSeconds(5), TimeSpan.FromMilliseconds(500)));
             server.commands = new System.Collections.Generic.List<Command>()
             {
                 new Command("repeat", (BaseEncode msg) =>
                 {
-                    File.WriteAllText(Directory.GetCurrentDirectory() + @"\data.txt", msg.GetString());
+                    char byt = (char)msg.GetBytes()[1];
+                    Console.WriteLine(msg.GetString());
                     return msg;
                 })
             };

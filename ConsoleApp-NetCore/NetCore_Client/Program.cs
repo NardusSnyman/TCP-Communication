@@ -14,7 +14,7 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            var arguments = ConnectionArguments.fromLocal(998, 3072);
+            var arguments = ConnectionArguments.fromLocal(998, 2048, TimeSpan.FromSeconds(5), TimeSpan.FromMilliseconds(500));
             Console.WriteLine($"ip: {arguments.ip}");
             Console.WriteLine($"port: {arguments.port}");
             ClientServer.Client client = new ClientServer.Client(arguments);
@@ -23,13 +23,15 @@ namespace Client
                  Console.WriteLine(mess);
              };
             Console.WriteLine($"Communiating...");
-            string data = Console.ReadLine();
+            while (1 == 1)
+            {
+                string data = Console.ReadLine();
 
-            
-           
-            var msg = client.Communicate("repeat", new BaseEncode(File.ReadAllBytes(Directory.GetCurrentDirectory() + @"\input.jpg")).GetString());
-                File.WriteAllBytes(Directory.GetCurrentDirectory() + @"\output.jpg", new BaseEncode(msg).GetBytes());
-                
+
+
+                var msg = client.Communicate("repeat", data);
+                Console.WriteLine(msg);
+            }
             Console.WriteLine("exit");
             Console.ReadLine();
         }

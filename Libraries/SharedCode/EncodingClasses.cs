@@ -96,9 +96,7 @@ namespace ClientServer
 
             public string GetString()
             {
-                if (bytes.Count > 0)
-                    return String.Join("", bytes);
-                return "NULL";
+                return String.Join("", bytes);
             }
             public byte[] GetBytes()
             {

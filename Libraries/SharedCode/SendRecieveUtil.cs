@@ -12,8 +12,8 @@ namespace ClientServer
     public class SendRecieveUtil
     {
 
-        public static string ender = "999999";
-        public static string separator = "999998";
+        public static string ender = "99999";
+        public static string separator = "99998";
         public static void SendBytes(TcpClient c, NetworkEncoding utf, ConnectionArguments conn, Action<string> debug)
         {
             NetworkStream stream = c.GetStream();
@@ -73,7 +73,7 @@ namespace ClientServer
             debug?.Invoke("overread does not contain ender");
             int count = 0;
             bool dataCollected = false;
-            int threshHold = 10000;
+            int threshHold = (int)conn.timeout_time.TotalMilliseconds;
             //add overread to new stream
             if (overread != null)
                     encode.bytes.AddRange(overread.bytes);
@@ -89,7 +89,7 @@ namespace ClientServer
                     
                     string data1 = Encoding.UTF8.GetString(buffer);
                    
-                    var piece = new NetworkEncoding(data1).bytes;//convert string representation to unicode characters
+                    var piece = new NetworkEncoding(data1).GetRawString();//convert string representation to unicode characters
 
                     int index = 0;
                     if ((index = piece.IndexOf(ender)) != -1)//contains ender
@@ -98,12 +98,13 @@ namespace ClientServer
                         //give part to encode
                         //give part to overread
 
-                        var data2 = new NetworkEncoding(piece.GetRange(0, index)).bytes;
+                        var data2 = new NetworkEncoding(piece.Substring(0, index)).bytes;
                         encode.bytes.AddRange(data2);
+                        Console.WriteLine("|||" + new NetworkEncoding(encode.bytes).GetOriginalString());
                         data?.Invoke(data2.ToArray(), true);
                         try
                         {
-                            overread = new NetworkEncoding(piece.GetRange(index + 1, piece.Count - index - 1));
+                            overread = new NetworkEncoding(piece.Substring(index + expanded_length, piece.Length - index - expanded_length));
                         }
                         catch (ArgumentException)
                         {
@@ -113,6 +114,7 @@ namespace ClientServer
                     }
                     else//does not contain
                     {
+                        Console.WriteLine("X");
                         var byt = new NetworkEncoding(piece);
                         data?.Invoke(byt.bytes.ToArray(), false);
                         encode.bytes.AddRange(byt.bytes);//add data to collector
@@ -122,7 +124,7 @@ namespace ClientServer
                 else
                 {
                     if (dataCollected == true)
-                        threshHold = 200;
+                        threshHold = (int)conn.timeout_on_recent.TotalMilliseconds;
                     
                     if (!sw.IsRunning)
                         sw.Start();
