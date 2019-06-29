@@ -29,7 +29,7 @@ namespace ClientServer
         public TcpListener listener;//server main listener
         public List<Command> commands = new List<Command>();//server commands
         Task task;//server task
-        BaseEncode overread;//data storage for overread data
+        NetworkEncoding overread;//data storage for overread data
         public Action<string> debug;
 
         public void Start()
@@ -60,10 +60,11 @@ namespace ClientServer
                         goto Start;
                     }
                     debug?.Invoke("checking commands list...");
-                    var parts = bytes.GetString().Split(SendRecieveUtil.separator);
-                    string operation = parts[0];
-                    string data = parts[1];
-                    string output = "null";
+                    var parts = bytes.GetRawString().Split(new string[] { SendRecieveUtil.separator }, StringSplitOptions.None);
+
+                    string operation = new NetworkEncoding(parts[0]).GetBaseEncode().GetString();
+                    BaseEncode data =new NetworkEncoding(parts[1]).GetBaseEncode();
+                    BaseEncode output = new BaseEncode("");
                     for(int i = 0; i < commands.Count; i++)
                     {
                         Command cmd = commands[i];
@@ -72,7 +73,7 @@ namespace ClientServer
                     }
 
                     debug?.Invoke("sending data");
-                    SendRecieveUtil.SendBytes(client, new BaseEncode(output), args, debug);
+                    SendRecieveUtil.SendBytes(client, output.GetNetworkEncoding(), args, debug);
                     debug?.Invoke("client disconnected");
                     client.Close();
                     
@@ -94,7 +95,7 @@ namespace ClientServer
     {
        
         public ConnectionArguments args;//connection arguments
-        BaseEncode overread;//data storage for overread data
+        NetworkEncoding overread;//data storage for overread data
         public Action<string> debug;
        
         public Client(ConnectionArguments args1)
@@ -127,46 +128,16 @@ namespace ClientServer
                  goto start;
              }
             debug?.Invoke("formatting data");
-            var input = new BaseEncode(operation + SendRecieveUtil.separator.ToString() + message);
+            var input = new NetworkEncoding(new BaseEncode(operation).GetNetworkEncoding().GetRawString() + SendRecieveUtil.separator + new BaseEncode(message).GetNetworkEncoding().GetRawString());
             debug?.Invoke("sending data");
             SendRecieveUtil.SendBytes(client, input, args, debug);
 
             debug?.Invoke("attempting read...");
              var data = SendRecieveUtil.RecieveBytes(client, ref overread, args, debug);
             debug?.Invoke("read data. parsing");
-            return data.GetString();
+            return data.GetBaseEncode().GetString();
          }//main form of communication*/
 
-        public void ProgressiveDataRetrieval(string operation, string message, Action<char[], bool> data)
-        {
-            TcpClient client = new TcpClient();
-        start:
-            try
-            {
-                client.Connect(args.ip, args.port);
-                debug?.Invoke("connected");
-            }
-            catch (Exception e)
-            {
-                debug?.Invoke("server offline");
-                Thread.Sleep(1200);
-                temp++;
-                if (temp > attempts)
-                {
-                    temp = 0;
-                    return;
-                }
-
-                goto start;
-            }
-            debug?.Invoke("formatting data");
-            var input = new BaseEncode(operation + SendRecieveUtil.separator.ToString() + message);
-            debug?.Invoke("sending data");
-            SendRecieveUtil.SendBytes(client, input, args, debug);
-
-            debug?.Invoke("attempting read...");
-            SendRecieveUtil.RecieveBytes(client, ref overread, args, debug, data);
-            debug?.Invoke("read data. parsing");
-        }//main form of communication*/
+       
     }
 }

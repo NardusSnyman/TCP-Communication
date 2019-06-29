@@ -9,7 +9,7 @@ namespace ClientServer
     public class EncodingClasses
     {
         private static char filler = '_';//must be availabe in utf8
-        private static int expanded_length = 8;//must be > 4
+        public static int expanded_length = 8;//must be > 4
         public class NetworkEncoding//contains filler for constant 
         {
 
@@ -24,6 +24,7 @@ namespace ClientServer
                     bytes.Add(String.Join("", buffer));
                 }
             }
+            
             public NetworkEncoding(List<string> data)
             {
                 bytes = data;
@@ -60,10 +61,6 @@ namespace ClientServer
             {
                 return String.Join(sep, bytes).Replace(filler.ToString(), "");
             }
-            public byte[] GetBytes()
-            {
-                return Encoding.UTF8.GetBytes(String.Join("", bytes));
-            }
         }
         public class BaseEncode
         {
@@ -76,37 +73,12 @@ namespace ClientServer
             {
                 bytes = new List<char>(characters.ToCharArray());
             }
-            public BaseEncode(FileInfo file, int buffer_size = 2048)
+            public BaseEncode(byte[] characters)
             {
-                var stream = file.OpenRead();
-                byte[] buffer = new byte[buffer_size];
-                int length;
-                while((length = stream.Read(buffer, 0, buffer.Length)) > 0)
+                foreach(byte b in characters)
                 {
-                    bytes.AddRange(Encoding.Unicode.GetString(buffer).ToCharArray());
+                    bytes.Add((char)b);
                 }
-                stream.Close();
-            }
-            public void SaveToFile(FileInfo file, int buffer_size = 2048)
-            {
-                var stream = file.OpenRead();
-
-                for (int index = 0; index < bytes.Count;index+=buffer_size)
-                {
-                    int count = bytes.Count - index;
-                    List<char> buffer;
-                    if (count < buffer_size) {
-                        buffer = bytes.GetRange(index, count);
-                        
-                    }
-                    else {
-                        buffer = bytes.GetRange(index, buffer_size);
-                    }
-                    var byte2 = Encoding.Unicode.GetBytes(String.Join("", buffer));
-                    stream.Write(byte2, 0, byte2.Length) ;
-
-                }
-                stream.Close();
             }
             public NetworkEncoding GetNetworkEncoding(Action<string> debug = null)
             {
@@ -127,6 +99,16 @@ namespace ClientServer
                 if (bytes.Count > 0)
                     return String.Join("", bytes);
                 return "NULL";
+            }
+            public byte[] GetBytes()
+            {
+                List<byte> byt = new List<byte>();
+                 foreach (char c in bytes)
+                    {
+                        byt.Add((byte)c);
+                    }
+                return byt.ToArray();
+                
             }
            
         }

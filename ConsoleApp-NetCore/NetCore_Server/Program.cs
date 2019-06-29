@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using ClientServer;
+using static ClientServer.EncodingClasses;
 
 namespace Server
 {
@@ -10,14 +11,16 @@ namespace Server
 
         static void Main(string[] args)
         {
-            ClientServer.Server server = new ClientServer.Server(ConnectionArguments.fromLocal(998, 1024));
+            ClientServer.Server server = new ClientServer.Server(ConnectionArguments.fromLocal(998, 3072));
             server.commands = new System.Collections.Generic.List<Command>()
             {
-                new Command("repeat", (string msg) =>
+                new Command("repeat", (BaseEncode msg) =>
                 {
-                    return msg + " (ECHO ECHo ECho Echo echo)";
+                    File.WriteAllText(Directory.GetCurrentDirectory() + @"\data.txt", msg.GetString());
+                    return msg;
                 })
             };
+            
             server.debug += (string mess) =>
             {
                 Console.WriteLine(mess);
