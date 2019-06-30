@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Timers;
@@ -12,14 +13,13 @@ namespace ClientServer
     public class SendRecieveUtil
     {
 
-        public static string ender = "99999";
-        public static string separator = "99998";
+        public static string ender { get { string x = "9_"; while (x.Length < expanded_length) x=9+x; return x; } }
+        public static string separator { get { string x = "8_"; while (x.Length < expanded_length) x = 9 + x; return x; } }
         public static void SendBytes(TcpClient c, NetworkEncoding utf, ConnectionArguments conn, Action<string> debug)
         {
             NetworkStream stream = c.GetStream();
             debug?.Invoke("ATTEMPTING WRITE");
-            
-            
+
 
             StringReader sr = new StringReader(utf.GetRawString() + ender);
             debug?.Invoke("variables initialized");
@@ -37,6 +37,7 @@ namespace ClientServer
                 debug?.Invoke("packet=" + (count++));
             }
             debug?.Invoke("end write");
+            
 
         }
 
@@ -51,6 +52,7 @@ namespace ClientServer
             {
                 if ((index2 = overread.GetRawString().IndexOf(ender)) != -1)
                 {
+                    Debug.WriteLine("-" + overread.GetRawString());
                     debug?.Invoke("overread contains ender");
                     //give part to encode
                     //give part to overread
@@ -87,24 +89,24 @@ namespace ClientServer
                     sw.Reset();
                     int length = stream.Read(buffer, 0, buffer.Length);//read string represented bytes
                     
-                    string data1 = Encoding.UTF8.GetString(buffer);
-                   
-                    var piece = new NetworkEncoding(data1).GetRawString();//convert string representation to unicode characters
-
+                    string data1 = Encoding.UTF8.GetString(buffer, 0, length);
+                    
+                    var piece = new NetworkEncoding(data1);//convert string representation to unicode characters
+                    
                     int index = 0;
-                    if ((index = piece.IndexOf(ender)) != -1)//contains ender
+                    if ((index = piece.bytes.IndexOf(ender)) != -1)//contains ender in list
                     {
                         debug?.Invoke("ender exists");
                         //give part to encode
                         //give part to overread
-
-                        var data2 = new NetworkEncoding(piece.Substring(0, index)).bytes;
+                        var data2 = new NetworkEncoding(new List<string>(piece.bytes.Take(index))).bytes;
                         encode.bytes.AddRange(data2);
-                        Console.WriteLine("|||" + new NetworkEncoding(encode.bytes).GetOriginalString());
+                        
                         data?.Invoke(data2.ToArray(), true);
                         try
                         {
-                            overread = new NetworkEncoding(piece.Substring(index + expanded_length, piece.Length - index - expanded_length));
+                            Debug.WriteLine("+" + String.Join("", piece.bytes.Skip(index +1)));
+                            overread = new NetworkEncoding(new List<string>(piece.bytes.Skip(index +1)));
                         }
                         catch (ArgumentException)
                         {
@@ -114,10 +116,8 @@ namespace ClientServer
                     }
                     else//does not contain
                     {
-                        Console.WriteLine("X");
-                        var byt = new NetworkEncoding(piece);
-                        data?.Invoke(byt.bytes.ToArray(), false);
-                        encode.bytes.AddRange(byt.bytes);//add data to collector
+                        data?.Invoke(piece.bytes.ToArray(), false);
+                        encode.bytes.AddRange(piece.bytes);//add data to collector
                     }
                     debug?.Invoke("packet=" + count++);
                 }
@@ -155,12 +155,9 @@ namespace ClientServer
             catch (Exception)
             {
                 //empty
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("-" + unicode + "-");
-                Console.ResetColor();
                 debug?.Invoke("conversion unsuccessful. empty packet");
                 successful = false;
-                return 'O';
+                return '-';
             }
         }
     }

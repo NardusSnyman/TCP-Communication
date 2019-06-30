@@ -52,6 +52,7 @@ namespace ClientServer
                     debug?.Invoke("client connected");
                     debug?.Invoke("attempting read...");
                     var bytes = SendRecieveUtil.RecieveBytes(client, ref overread, args, debug);
+                    
                     debug?.Invoke("read data. parsing");
                     if (bytes == null)//encoding error
                     {
@@ -114,7 +115,8 @@ namespace ClientServer
         int temp = 0;
         public string Communicate(string operation, string message)
          {
-             TcpClient client = new TcpClient();
+            debug?.Invoke(operation + ":" + message);
+            TcpClient client = new TcpClient();
              start:
              try
              {
@@ -135,6 +137,7 @@ namespace ClientServer
                  goto start;
              }
             debug?.Invoke("formatting data");
+            debug?.Invoke($"--{new BaseEncode(operation).GetNetworkEncoding().GetRawString()} + {SendRecieveUtil.separator} + {new BaseEncode(message).GetNetworkEncoding().GetRawString()}");
             var input = new NetworkEncoding(new BaseEncode(operation).GetNetworkEncoding().GetRawString() + SendRecieveUtil.separator + new BaseEncode(message).GetNetworkEncoding().GetRawString());
             debug?.Invoke("sending data");
             SendRecieveUtil.SendBytes(client, input, args, debug);
