@@ -8,6 +8,7 @@ using System.Runtime;
 using System.Threading.Tasks;
 using static ClientServer.EncodingClasses;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ClientServer
 {
@@ -30,7 +31,7 @@ namespace ClientServer
         public List<Command> commands = new List<Command>();//server commands
         Task task;//server task
         NetworkEncoding overread;//data storage for overread data
-        public Action<string> debug;
+        public ExtendedDebug debug = new ExtendedDebug();
 
         public void Start()
         {
@@ -38,7 +39,7 @@ namespace ClientServer
 
             listener = new TcpListener(IPAddress.Any, args.port);
                 listener.Start();
-            debug?.Invoke("listener started");
+            debug.mainProcessDebug?.Invoke("listener started");
 
             task = new Task(new Action(() =>
             {
@@ -49,24 +50,24 @@ namespace ClientServer
                     
                     ///-----
                     TcpClient client = listener.AcceptTcpClient();//accept new client
-                    debug?.Invoke("client connected");
-                    debug?.Invoke("attempting read...");
-                    var bytes = SendRecieveUtil.RecieveBytes(client, ref overread, args, debug);
+                    debug.mainProcessDebug?.Invoke("client connected");
+                    debug.closeUpDebug?.Invoke("attempting read...");
+                    var bytes = SendRecieveUtil.RecieveBytes(client, ref overread, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, new ExtendedDebug()));
                     
-                    debug?.Invoke("read data. parsing");
+                    debug.closeUpDebug?.Invoke("read data. parsing");
                     if (bytes == null)//encoding error
                     {
-                        debug?.Invoke("read is null");
+                        debug.errorDebug?.Invoke("read is null");
                         client.Dispose();
                         goto Start;
                     }
-                    debug?.Invoke("checking commands list...");
+                    debug.closeUpDebug?.Invoke("checking commands list...");
                     var parts = bytes.GetRawString().Split(new string[] { SendRecieveUtil.separator }, StringSplitOptions.None);
-                    debug?.Invoke("operation...");
+                   
                     string operation = new NetworkEncoding(parts[0]).GetBaseEncode().GetString();
-                    debug?.Invoke("data...");
+                    
                     BaseEncode data =new NetworkEncoding(parts[1]).GetBaseEncode();
-                    debug?.Invoke("command=" + operation);
+                    
                     bool found = false;
                     BaseEncode output = new BaseEncode("NULL");
                     for(int i = 0; i < commands.Count; i++)
@@ -79,10 +80,9 @@ namespace ClientServer
                         }
                     }
                     if(!found)
-                        debug?.Invoke("command not found");
-                    debug?.Invoke("sending data");
-                    SendRecieveUtil.SendBytes(client, output.GetNetworkEncoding(), args, debug);
-                    debug?.Invoke("client disconnected");
+                        debug.errorDebug?.Invoke("command not found");
+                    SendRecieveUtil.SendBytes(client, output.GetNetworkEncoding(), args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, new ExtendedDebug()));
+                    debug.mainProcessDebug?.Invoke("client disconnected");
                     client.Close();
                     
                 }
@@ -101,53 +101,90 @@ namespace ClientServer
     }
     public class Client
     {
-       
+
+        Action client_act;
         public ConnectionArguments args;//connection arguments
         NetworkEncoding overread;//data storage for overread data
-        public Action<string> debug;
-       
-        public Client(ConnectionArguments args1)
+        public ExtendedDebug universalDebug = new ExtendedDebug();
+        public Queue<ClientMessage> command_queue = new Queue<ClientMessage>();
+        public Client(ConnectionArguments args1, ExtendedDebug debug = null)
         {
             args = args1;
+            universalDebug = debug;
         }
         //-----------------
-        int attempts = 4;
         int temp = 0;
-        public string Communicate(string operation, string message)
+        public void Communicate(string operation, string message, Action<string> onCompleted, Action failed = null, ExtendedDebug debug = null)
          {
-            debug?.Invoke(operation + ":" + message);
-            TcpClient client = new TcpClient();
-             start:
-             try
-             {
-                 client.Connect(args.ip, args.port);
-                debug?.Invoke("connected");
-             }
-             catch (Exception e)
-             {
-                debug?.Invoke("server offline");
-                Thread.Sleep(1200);
-                 temp++;
-                 if(temp > attempts)
-                 {
-                     temp = 0;
-                    return "";
-                 }
-                
-                 goto start;
-             }
-            debug?.Invoke("formatting data");
-            debug?.Invoke($"--{new BaseEncode(operation).GetNetworkEncoding().GetRawString()} + {SendRecieveUtil.separator} + {new BaseEncode(message).GetNetworkEncoding().GetRawString()}");
-            var input = new NetworkEncoding(new BaseEncode(operation).GetNetworkEncoding().GetRawString() + SendRecieveUtil.separator + new BaseEncode(message).GetNetworkEncoding().GetRawString());
-            debug?.Invoke("sending data");
-            SendRecieveUtil.SendBytes(client, input, args, debug);
+            ClientMessage cm = new ClientMessage();
+            if (debug == null)
+                cm.debug = new ExtendedDebug();
+            else
+                cm.debug = debug;
+            cm.failed = failed;
+            cm.completed = onCompleted;
+            cm.operation = operation;
+            cm.message = message;
+            command_queue.Enqueue(cm);
+            Debug.WriteLine("QUEUED " + cm.operation);
+             
+         }
 
-            debug?.Invoke("attempting read...");
-             var data = SendRecieveUtil.RecieveBytes(client, ref overread, args, debug);
-            debug?.Invoke("read data. parsing");
-            return data.GetBaseEncode().GetString();
-         }//main form of communication*/
+        public Action clientThread()
+        {
+            Action act = new Action(()=>
+            {
+                while (true)
+                {
+                    if(command_queue.Count > 0)
+                    {
+                        TcpClient client = new TcpClient();
+                        ClientMessage cm = command_queue.Dequeue();
+                        ExtendedDebug debug = cm.debug;
+                        Debug.WriteLine("RUNNING " + cm.operation);
+                    start:
+                        try
+                        {
+                            client.Connect(args.ip, args.port);
+                            debug.mainProcessDebug?.Invoke("connected");
+                            universalDebug.mainProcessDebug?.Invoke("connected");
+                        }
+                        catch (Exception e)
+                        {
+                            debug.errorDebug?.Invoke("server offline");
+                            universalDebug.errorDebug?.Invoke("server offline");
+                            Thread.Sleep(1200);
+                            temp++;
+                            if (temp > args.server_reconnect_attempts)
+                            {
+                                debug.errorDebug?.Invoke($"attempt {temp + 1} of {args.server_reconnect_attempts}");
+                                universalDebug.errorDebug?.Invoke($"attempt {temp + 1} of {args.server_reconnect_attempts}");
+                                temp = 0;
+                                cm?.failed();
+                            }
 
+                            goto start;
+                        }
+                        debug.closeUpDebug?.Invoke("formatting data");
+                        universalDebug.closeUpDebug?.Invoke("formatting data");
+                        var input = new NetworkEncoding(new BaseEncode(cm.operation).GetNetworkEncoding().GetRawString() + SendRecieveUtil.separator + new BaseEncode(cm.message).GetNetworkEncoding().GetRawString());
+                        SendRecieveUtil.SendBytes(client, input, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, universalDebug));
+
+
+                        var data = SendRecieveUtil.RecieveBytes(client, ref overread, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, universalDebug));
+                        debug.closeUpDebug?.Invoke("read data. parsing");
+                        universalDebug.closeUpDebug?.Invoke("read data. parsing");
+                        debug.mainProcessDebug?.Invoke("client closed");
+                        universalDebug.mainProcessDebug?.Invoke("client closed");
+                        cm.completed(data.GetBaseEncode().GetString());
+                        
+                    }
+                }
+            });
+            client_act = act;
+            return act;
+        }
+        
        
     }
 }

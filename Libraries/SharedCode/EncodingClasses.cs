@@ -9,7 +9,7 @@ namespace ClientServer
     public class EncodingClasses
     {
         private static char filler = '_';//must be availabe in utf8
-        public static int expanded_length = 8;//must be > 4
+        public static int expanded_length = 8;//must be > 5
         public class NetworkEncoding//contains filler for constant 
         {
 
@@ -29,14 +29,14 @@ namespace ClientServer
             {
                 bytes = data;
             }
-            public BaseEncode GetBaseEncode(Action<string> debug = null)
+            public BaseEncode GetBaseEncode()
             {
                 List<char> data = new List<char>();
                 for (int i = 0; i < bytes.Count; i++)
                 {
                     string code = bytes[i];
                     code = code.Replace(filler.ToString(), "");
-                    char c = SendRecieveUtil.toUnicodeChar(code, out bool succ, debug);
+                    char c = SendRecieveUtil.toUnicodeChar(code, out bool succ);
                     if (succ)
                         data.Add(c);
                     else i = bytes.Count;//rest of the data is null 
