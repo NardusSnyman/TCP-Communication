@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using static ClientServer.EncodingClasses;
 using System.Threading;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ClientServer
 {
@@ -30,7 +31,7 @@ namespace ClientServer
         public TcpListener listener;//server main listener
         public List<Command> commands = new List<Command>();//server commands
         Task task;//server task
-        NetworkEncoding overread;//data storage for overread data
+        NetworkData overread = new NetworkData();//data storage for overread data
         public ExtendedDebug debug = new ExtendedDebug();
 
         public void Start()
@@ -46,44 +47,58 @@ namespace ClientServer
 
                 while (1 == 1)
                 {
-                    Start:
-                    
-                    ///-----
+
+
+                    //-----
+                    debug.mainProcessDebug?.Invoke("waiting for client");
+                    debug.closeUpDebug?.Invoke("waiting for client");
                     TcpClient client = listener.AcceptTcpClient();//accept new client
                     debug.mainProcessDebug?.Invoke("client connected");
                     debug.closeUpDebug?.Invoke("attempting read...");
-                    var bytes = SendRecieveUtil.RecieveBytes(client, ref overread, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, new ExtendedDebug()));
-                    
-                    debug.closeUpDebug?.Invoke("read data. parsing");
-                    if (bytes == null)//encoding error
+
+                    NetworkData output = null;
+                    Command comm = new Command();
+                    string ip = "";
+                    long length = 0;
+                    SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){
+                    new RetrievalNode()
                     {
-                        debug.errorDebug?.Invoke("read is null");
-                        client.Dispose();
-                        goto Start;
-                    }
-                    debug.closeUpDebug?.Invoke("checking commands list...");
-                    var parts = bytes.GetRawString().Split(new string[] { SendRecieveUtil.separator }, StringSplitOptions.None);
-                   
-                    string operation = new NetworkEncoding(parts[0]).GetBaseEncode().GetString();
-                    
-                    BaseEncode data =new NetworkEncoding(parts[1]).GetBaseEncode();
-                    
-                    bool found = false;
-                    BaseEncode output = new BaseEncode("NULL");
-                    for(int i = 0; i < commands.Count; i++)
-                    {
-                        Command cmd = commands[i];
-                        if (cmd.operation == operation)
+                        direct = (x) =>//length
                         {
-                            output = cmd.action.Invoke(data);
-                            found = true;
-                        }
-                    }
-                    if(!found)
+                            length = Convert.ToInt64(x.GetDecodedString());
+                        }, motive="length"
+                    },new RetrievalNode()
+                    {
+                        direct = (x) =>//ip
+                        {
+                            ip=x.GetDecodedString();
+                        }, motive="ip"
+                    },
+                        new RetrievalNode()
+                    {
+                        direct = (x) =>//operation
+                        {
+                            string operation = x.GetDecodedString();
+                            foreach (var command in commands)
+                            {
+                                if (command.operation == operation)
+                                {
+                                    comm = command;
+                                }
+                            }
+                        }, motive="operation"
+                    }, new RetrievalNode(){
+                         direct = (x) =>//message
+                        {
+                            output = comm.action?.Invoke(new Tuple<NetworkData, string>(x, ip));
+                        }, motive="message"
+                    } });
+                    
+                    if(output == null)
                         debug.errorDebug?.Invoke("command not found");
-                    SendRecieveUtil.SendBytes(client, output.GetNetworkEncoding(), args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, new ExtendedDebug()));
+                    
+                    SendRecieveUtil.SendBytes(client, output, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, new ExtendedDebug()));
                     debug.mainProcessDebug?.Invoke("client disconnected");
-                    client.Close();
                     
                 }
                 
@@ -104,7 +119,7 @@ namespace ClientServer
 
         Action client_act;
         public ConnectionArguments args;//connection arguments
-        NetworkEncoding overread;//data storage for overread data
+        NetworkData overread;//data storage for overread data
         public ExtendedDebug universalDebug = new ExtendedDebug();
         public Queue<ClientMessage> command_queue = new Queue<ClientMessage>();
         public Client(ConnectionArguments args1, ExtendedDebug debug = null)
@@ -114,7 +129,7 @@ namespace ClientServer
         }
         //-----------------
         int temp = 0;
-        public void Communicate(string operation, string message, Action<string> onCompleted, Action failed = null, ExtendedDebug debug = null)
+        public void Communicate(string operation, string message, Action<NetworkData> onCompleted, Action failed = null, ExtendedDebug debug = null)
          {
             ClientMessage cm = new ClientMessage();
             if (debug == null)
@@ -126,8 +141,7 @@ namespace ClientServer
             cm.operation = operation;
             cm.message = message;
             command_queue.Enqueue(cm);
-            Debug.WriteLine("QUEUED " + cm.operation);
-             
+            universalDebug.closeUpDebug?.Invoke("Enqueueing commmands");
          }
 
         public Action clientThread()
@@ -136,48 +150,62 @@ namespace ClientServer
             {
                 while (true)
                 {
-                    if(command_queue.Count > 0)
+                    if (command_queue.Count > 0)
                     {
+                        
+
                         TcpClient client = new TcpClient();
+                        
                         ClientMessage cm = command_queue.Dequeue();
                         ExtendedDebug debug = cm.debug;
-                        Debug.WriteLine("RUNNING " + cm.operation);
                     start:
+                       
+                    
                         try
                         {
                             client.Connect(args.ip, args.port);
-                            debug.mainProcessDebug?.Invoke("connected");
-                            universalDebug.mainProcessDebug?.Invoke("connected");
                         }
                         catch (Exception e)
                         {
-                            debug.errorDebug?.Invoke("server offline");
-                            universalDebug.errorDebug?.Invoke("server offline");
                             Thread.Sleep(1200);
                             temp++;
                             if (temp > args.server_reconnect_attempts)
                             {
-                                debug.errorDebug?.Invoke($"attempt {temp + 1} of {args.server_reconnect_attempts}");
-                                universalDebug.errorDebug?.Invoke($"attempt {temp + 1} of {args.server_reconnect_attempts}");
                                 temp = 0;
-                                cm?.failed();
+                                cm.failed?.Invoke();
+                                client.Close();
+                                return;
                             }
 
                             goto start;
                         }
-                        debug.closeUpDebug?.Invoke("formatting data");
-                        universalDebug.closeUpDebug?.Invoke("formatting data");
-                        var input = new NetworkEncoding(new BaseEncode(cm.operation).GetNetworkEncoding().GetRawString() + SendRecieveUtil.separator + new BaseEncode(cm.message).GetNetworkEncoding().GetRawString());
-                        SendRecieveUtil.SendBytes(client, input, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, universalDebug));
+                        string externalip = new WebClient().DownloadString("http://icanhazip.com");
+                        NetworkData dat = NetworkData.fromEncodedString(String.Join(SendRecieveUtil.separator, new List<string>() { externalip, cm.operation, cm.message }.Select(x=>NetworkData.fromDecodedString(x).GetEncodedString())));
+                        dat.InitStream();
+                        SendRecieveUtil.SendBytes(client, dat, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, universalDebug));
 
+                        NetworkData data = null;
+                        SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){new RetrievalNode()
+                        {
 
-                        var data = SendRecieveUtil.RecieveBytes(client, ref overread, args, new Tuple<ExtendedDebug, ExtendedDebug>(debug, universalDebug));
-                        debug.closeUpDebug?.Invoke("read data. parsing");
-                        universalDebug.closeUpDebug?.Invoke("read data. parsing");
-                        debug.mainProcessDebug?.Invoke("client closed");
-                        universalDebug.mainProcessDebug?.Invoke("client closed");
-                        cm.completed(data.GetBaseEncode().GetString());
+                            direct = (x) =>//length
+                            {
+                                Console.WriteLine(x.GetDecodedString());
+                            }
+                        },
+                        new RetrievalNode()
+                        {
+
+                            direct = (x) =>
+                            {
+                                data = x;
+                            }
+                        } });
                         
+
+                        cm.completed?.Invoke(data);
+
+                        client.Close();
                     }
                 }
             });

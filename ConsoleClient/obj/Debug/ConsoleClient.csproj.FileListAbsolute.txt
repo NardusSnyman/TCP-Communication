@@ -1,0 +1,10 @@
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\bin\Debug\ConsoleClient.exe.config
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\bin\Debug\ConsoleClient.exe
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\bin\Debug\ConsoleClient.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\bin\Debug\NetFramework.dll
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\bin\Debug\NetFramework.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\obj\Debug\ConsoleClient.csproj.CoreCompileInputs.cache
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\obj\Debug\ConsoleClient.csproj.CopyComplete
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\obj\Debug\ConsoleClient.exe
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\obj\Debug\ConsoleClient.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\ConsoleClient\obj\Debug\ConsoleClient.csprojAssemblyReference.cache

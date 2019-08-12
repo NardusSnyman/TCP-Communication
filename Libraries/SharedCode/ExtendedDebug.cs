@@ -12,6 +12,7 @@ namespace ClientServer
         public Action<bool, long> packetInvoked;//upload:packet #
         public Action<long, long> uploadProgressDebug;//value:total
         public Action<long, long> downloadProgressDebug;//value:total
+        public Action<TimeSpan, TimeSpan> activeTimeStallTime;//total time active, time stalled(not recieving information)
 
     }
     

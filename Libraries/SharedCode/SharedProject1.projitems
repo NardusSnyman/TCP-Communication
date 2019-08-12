@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectionArguments.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EncodingClasses.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ExtendedDebug.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RetrievalNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SendRecieveUtil.cs" />
   </ItemGroup>
 </Project>

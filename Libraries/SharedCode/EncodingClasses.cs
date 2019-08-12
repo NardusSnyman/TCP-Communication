@@ -10,105 +10,86 @@ namespace ClientServer
     {
         private static char filler = '_';//must be availabe in utf8
         public static int expanded_length = 8;//must be > 5
-        public class NetworkEncoding//contains filler for constant 
+        public class NetworkData//contains filler for constant 
         {
+            public List<string> bytes;
 
-            public List<string> bytes = new List<string>();
-
-            public NetworkEncoding(string data)
+            public Stream finished_stream;
+            public NetworkData()
             {
+                bytes = new List<string>();
+            }
+            public static NetworkData fromEncodedString(string data)
+            {
+                var byte1 = new List<string>();
                 StringReader reader = new StringReader(data);
                 char[] buffer = new String('0', expanded_length).ToCharArray();
                 while(reader.ReadBlock(buffer, 0, expanded_length) > 0)
                 {
-                    bytes.Add(String.Join("", buffer));
+                    byte1.Add(String.Join("", buffer));
                 }
+                return new NetworkData() { bytes = byte1 };
             }
-            
-            public NetworkEncoding(List<string> data)
+            public static NetworkData fromDecodedString(string data)
             {
-                bytes = data;
+                var dat = toNet(data.ToCharArray());
+
+                return new NetworkData() { bytes = dat } ;
             }
-            public BaseEncode GetBaseEncode()
+            public string GetEncodedString()
+            {
+                return String.Join("", bytes);
+            }
+            public string GetDecodedString()
+            {
+                return String.Join("", toBase(bytes.ToArray()));
+            }
+            public byte[] GetDecodedBytes()
+            {
+                return Encoding.UTF8.GetBytes(String.Join("", bytes));
+            }
+            public byte[] GetEncodedBytes()
+            {
+                return Encoding.UTF8.GetBytes(String.Join("", toBase(bytes.ToArray())));
+            }
+            public void InitStream()
+            {
+                string data = SendRecieveUtil.separator + String.Join("", bytes) + SendRecieveUtil.separator;//initial
+                long leng = data.Length + String.Join("", toNet(data.Length.ToString().ToCharArray())).Length;//length of initial and literal length together
+                string length = String.Join("", toNet(Convert.ToInt32(leng).ToString().ToCharArray()));
+                string data1 = length + data;//new predicted length ^ and data
+                var dat = Encoding.UTF8.GetBytes(data1);//data
+                finished_stream = new MemoryStream(dat);
+            }
+            private static List<string> toNet(char[] bytes1)
+            {
+                List<string> dat1 = new List<string>();
+                for (int i = 0; i < bytes1.Length; i++)
+                {
+                    string str = SendRecieveUtil.toUnicodeString(bytes1[i], new Action<string>((x) => { }));
+                    while (str.Length < expanded_length)
+                        str += filler.ToString();
+
+                    dat1.Add(str);
+                }
+                return dat1;
+            }
+            private static List<char> toBase(string[] bytes1)
             {
                 List<char> data = new List<char>();
-                for (int i = 0; i < bytes.Count; i++)
+                for (int i = 0; i < bytes1.Length; i++)
                 {
-                    string code = bytes[i];
+                    string code = bytes1[i];
                     code = code.Replace(filler.ToString(), "");
                     char c = SendRecieveUtil.toUnicodeChar(code, out bool succ);
                     if (succ)
                         data.Add(c);
-                    else i = bytes.Count;//rest of the data is null 
-                        
-                    
-                }
-                return new BaseEncode(data);
-            }
-            public string GetRawString()
-            {
-                return String.Join("", bytes);
-            }
-            public string GetRawStringWithSeparator(string sep)
-            {
-                return String.Join(sep, bytes);
-            }
-            public string GetOriginalString()
-            {
-                return String.Join("", bytes).Replace(filler.ToString(), "");
-            }
-            public string GetOriginalStringWithSeparator(string sep)
-            {
-                return String.Join(sep, bytes).Replace(filler.ToString(), "");
-            }
-        }
-        public class BaseEncode
-        {
-            public List<char> bytes = new List<char>();
-            public BaseEncode(List<char> characters)
-            {
-                bytes = characters;
-            }
-            public BaseEncode(string characters)
-            {
-                bytes = new List<char>(characters.ToCharArray());
-            }
-            public BaseEncode(byte[] characters)
-            {
-                foreach(byte b in characters)
-                {
-                    bytes.Add((char)b);
-                }
-            }
-            public NetworkEncoding GetNetworkEncoding(Action<string> debug = null)
-            {
-                List<string> data = new List<string>();
-                for(int i = 0; i < bytes.Count; i++)
-                {
-                    string str = SendRecieveUtil.toUnicodeString(bytes[i], debug);
-                    while(str.Length < expanded_length)
-                        str += filler.ToString();
-                    
-                        data.Add(str);
-                }
-                return new NetworkEncoding(data);
-            }
+                    else i = bytes1.Length;//rest of the data is null 
 
-            public string GetString()
-            {
-                return String.Join("", bytes);
+
+                }
+                return data;
             }
-            public byte[] GetBytes()
-            {
-                List<byte> byt = new List<byte>();
-                 foreach (char c in bytes)
-                    {
-                        byt.Add((byte)c);
-                    }
-                return byt.ToArray();
-                
-            }
-           
         }
     }
 }
