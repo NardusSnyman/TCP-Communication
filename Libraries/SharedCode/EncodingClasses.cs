@@ -9,7 +9,7 @@ namespace ClientServer
     public class EncodingClasses
     {
         private static char filler = '_';//must be availabe in utf8
-        public static int expanded_length = 8;//must be > 5
+        public static int expanded_length = 4;//must be > 5
         public class NetworkData//contains filler for constant 
         {
             public List<string> bytes;
@@ -36,6 +36,21 @@ namespace ClientServer
 
                 return new NetworkData() { bytes = dat } ;
             }
+            public static NetworkData fromDecodedBytes(byte[] data)
+            {
+                List<string> str = new List<string>();
+                foreach(var byt in data)
+                {
+                    char c = (char)byt;
+                    string str1 = SendRecieveUtil.toUnicodeString(c, new Action<string>((x) => { }));
+                    while (str1.Length < expanded_length)
+                        str1 += filler.ToString();
+                    str.Add(str1);
+                }
+
+                
+                return new NetworkData() { bytes =str };
+            }
             public string GetEncodedString()
             {
                 return String.Join("", bytes);
@@ -46,11 +61,12 @@ namespace ClientServer
             }
             public byte[] GetDecodedBytes()
             {
-                return Encoding.UTF8.GetBytes(String.Join("", bytes));
-            }
-            public byte[] GetEncodedBytes()
-            {
-                return Encoding.UTF8.GetBytes(String.Join("", toBase(bytes.ToArray())));
+                List<byte> bytes_ = new List<byte>();
+                foreach(char c in toBase(bytes.ToArray()))
+                {
+                    bytes_.Add((byte)c);
+                }
+                return bytes_.ToArray();
             }
             public void InitStream()
             {

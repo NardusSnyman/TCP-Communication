@@ -10,9 +10,8 @@ namespace ClientServer
     public class ClientMessage
     {
         public string operation;
-        public string message;
+        public NetworkData message;
         public Action<NetworkData> completed;
-        public ExtendedDebug debug;
         public Action failed;
     }
 }

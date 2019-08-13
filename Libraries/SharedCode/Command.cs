@@ -9,8 +9,7 @@ namespace ClientServer
     public class Command
     {
         public string operation;
-        public Func<Tuple<NetworkData, string>, NetworkData> action;
-
+        public Func<NetworkData, NetworkData> action;
         public Command()
         {
 

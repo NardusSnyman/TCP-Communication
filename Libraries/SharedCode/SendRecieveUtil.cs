@@ -13,15 +13,10 @@ namespace ClientServer
 {
     public class SendRecieveUtil
     {
-        public static string separator { get { string x = "8_"; while (x.Length < expanded_length) x = 9 + x; return x; } }
-        public static void SendBytes(TcpClient c, NetworkData data1, ConnectionArguments conn, Tuple<ExtendedDebug, ExtendedDebug> deb)
+        public static string separator { get { string x = ""; while (x.Length < expanded_length) x = 9 + x; return x; } }
+        public static void SendBytes(TcpClient c, NetworkData data1, ConnectionArguments conn)
         {
-            ExtendedDebug debug = deb.Item1;
-            ExtendedDebug universalDebug = deb.Item2;
             NetworkStream stream = c.GetStream();
-            debug.mainProcessDebug?.Invoke("ATTEMPTING WRITE");
-            universalDebug.mainProcessDebug?.Invoke("ATTEMPTING WRITE");
-            universalDebug.mainProcessDebug?.Invoke("ATTEMPTING WRITE");
         start:
             Stream data = data1.finished_stream;
             if (data == null)
@@ -30,29 +25,17 @@ namespace ClientServer
                 goto start;
             }
             data.Position = 0;
-
-            
-            debug.closeUpDebug?.Invoke("variables initialized");
-            universalDebug.closeUpDebug?.Invoke("variables initialized");
             byte[] buffer = new byte[conn.buffer_size];
 
             long count = 0;
             int length;
-
-            debug.closeUpDebug?.Invoke("starting write");
-            universalDebug.closeUpDebug?.Invoke("starting write");
 
             while ((length = data.Read(buffer, 0, conn.buffer_size))> 0)
             {
                 if (c.Connected)
                 {
                     stream.Write(buffer, 0, length);
-
                     count += buffer.Length / conn.buffer_size;
-                    debug.uploadProgressDebug?.Invoke(count * conn.buffer_size, data.Length);
-                    universalDebug.uploadProgressDebug?.Invoke(count * conn.buffer_size, data.Length);
-                    debug.packetInvoked?.Invoke(true, count);
-                    universalDebug.packetInvoked?.Invoke(true, count);
                 }
                 else
                 {
@@ -60,8 +43,6 @@ namespace ClientServer
                     stream = c.GetStream();
                 }
             }
-            debug.mainProcessDebug?.Invoke("END WRITE");
-            universalDebug.mainProcessDebug?.Invoke("END WRITE");
             
 
         }
@@ -78,6 +59,7 @@ namespace ClientServer
         }
         public static NetworkData getData(Stream stream, ref NetworkData overread, int buffer_size, string separator)
         {
+            int onlyonce = 0;
                 int index = 0;
                 StringBuilder sb = new StringBuilder();
                 byte[] buffer = new byte[buffer_size];
@@ -95,19 +77,23 @@ namespace ClientServer
                     return return_;//return data
                 }
                 else {//overread does not contain ender
-                    sb.Append(overread.GetEncodedString());
+                    if (onlyonce == 0)
+                        sb.Append(overread.GetEncodedString());
+                    onlyonce = 1;
                     int length = stream.Read(buffer, 0, buffer_size);//read string represented bytes
                     string data = Encoding.UTF8.GetString(buffer, 0, length);
 
                    
                     if ((index = data.IndexOf(separator)) != -1)//contains ender in list
                     {
+                        
                         sb.Append(data);
+                        
                         int index2 = sb.Length - (data.Length - index);
 
 
                         var return_ = NetworkData.fromEncodedString(sb.ToString().Substring(0, index2));
-                        
+                      
                         overread = NetworkData.fromEncodedString(data.Substring(index + separator.Length));
                         return return_;
 

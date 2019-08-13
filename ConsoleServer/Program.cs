@@ -14,18 +14,15 @@ namespace ConsoleServer
     {
         static void Main(string[] args)
         {
-            Server server = new Server(ConnectionArguments.fromLocal(998, 256));
-            server.debug = new ExtendedDebug()
-            {
-                mainProcessDebug = (x)=>{ Console.WriteLine(x); }, closeUpDebug = (x) => { Console.WriteLine(x); }
+            Server server = new Server(ConnectionArguments.fromLocal(998, 2048));
+            server.commands = new List<Command>() {
+                new Command() {
+                operation = "repeat", action= (NetworkData info)=>{
+                    string path = Directory.GetCurrentDirectory() + @"\File.png";
+                    File.WriteAllBytes(path, info.GetDecodedBytes());
+                    return info;
+                } }
             };
-            server.commands = new List<Command>() { new Command() {
-                operation = "repeat", action= (Tuple<NetworkData, string> info)=>{
-
-                    Console.WriteLine(info.Item2);
-                    return NetworkData.fromDecodedString(info.Item1.GetDecodedString() + "REPEATED");
-                }
-            } };
             Console.WriteLine(server.args.ip + ":" + server.args.port);
             server.Start();
             while (1 == 1)

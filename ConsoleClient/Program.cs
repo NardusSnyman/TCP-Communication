@@ -1,11 +1,13 @@
 ﻿using ClientServer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using static ClientServer.EncodingClasses;
 
 namespace ConsoleClient
 {
@@ -13,8 +15,7 @@ namespace ConsoleClient
     {
         static void Main(string[] args)
         {
-            var disp = Dispatcher.CurrentDispatcher;
-            Client client = new Client(new ConnectionArguments("192.168.1.8", 998, 256));
+            Client client = new Client(new ConnectionArguments("192.168.0.143", 998, 2048));
             Console.WriteLine(client.args.ip + ":" + client.args.port);
             client.universalDebug = new ExtendedDebug()
             {
@@ -27,24 +28,24 @@ namespace ConsoleClient
                         Console.WriteLine(x);
                 }
             };
-            Console.WriteLine("hello");
+            
             var t = new Task(()=>
             {
-                Console.WriteLine("hello2");
                 client.clientThread().Invoke();
-                Console.WriteLine("hello3");
-
             });
             t.ConfigureAwait(false);
             t.Start();
 
-            Console.WriteLine("start");
-            Task.Delay(200);
-            client.Communicate("repeat", "hello", (x)=>{ Console.WriteLine(x.GetDecodedString()); });
-            Console.WriteLine("end");
-            while (1==1)
-            {
 
+
+            Console.Write("Path: ");
+            var txt = @"C:\Users\nicho\Pictures\Camera Roll\Capture.PNG";
+            var dat = NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)).GetDecodedBytes();
+            File.WriteAllBytes(new FileInfo(txt).DirectoryName + @"\NewFile2" + new FileInfo(txt).Extension, dat);
+            client.Communicate("repeat", NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)), (x) => { File.WriteAllBytes(new FileInfo(txt).DirectoryName + @"\NewFile" + new FileInfo(txt).Extension, x.GetDecodedBytes()); });
+            while (1 == 1)
+            {
+                
             }
         }
     }
