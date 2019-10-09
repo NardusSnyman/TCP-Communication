@@ -18,12 +18,14 @@ namespace ConsoleServer
             server.commands = new List<Command>() {
                 new Command() {
                 operation = "repeat", action= (NetworkData info)=>{
-                    string path = Directory.GetCurrentDirectory() + @"\File.png";
-                    File.WriteAllBytes(path, info.GetDecodedBytes());
+                    Console.WriteLine("repeat");
+                    
                     return info;
                 } }
             };
+            
             Console.WriteLine(server.args.ip + ":" + server.args.port);
+            Console.WriteLine("server online");
             server.Start();
             while (1 == 1)
             {

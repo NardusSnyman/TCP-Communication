@@ -8,7 +8,6 @@ using System.Runtime;
 using System.Threading.Tasks;
 using static ClientServer.EncodingClasses;
 using System.Threading;
-using System.Diagnostics;
 using System.Linq;
 
 namespace ClientServer
@@ -36,6 +35,7 @@ namespace ClientServer
             command_queue.Enqueue(cm);
          }
 
+        
         public Action clientThread()
         {
             Action act = new Action(()=>
@@ -49,10 +49,10 @@ namespace ClientServer
                         TcpClient client = new TcpClient();
                         
                         ClientMessage cm = command_queue.Dequeue();
-                        
+
                     start:
-                       
-                    
+
+
                         try
                         {
                             client.Connect(args.ip, args.port);
@@ -71,11 +71,17 @@ namespace ClientServer
 
                             goto start;
                         }
-                        NetworkData dat = NetworkData.fromEncodedString(String.Join(SendRecieveUtil.separator, new List<string>() { cm.operation, cm.message.GetDecodedString() }.Select(x=>NetworkData.fromDecodedString(x).GetEncodedString())));
+                        string msg = "";
+                        if (cm.message != null)
+                        {
+                            msg = cm.message.GetDecodedString();
+                        }
+                        NetworkData dat = NetworkData.fromEncodedString(String.Join(SendRecieveUtil.separator, 
+                            new List<string>() { cm.operation, msg  }.Select(x=>NetworkData.fromDecodedString(x).GetEncodedString())));
                         dat.InitStream();
                         SendRecieveUtil.SendBytes(client, dat, args);
 
-                        NetworkData data = null;
+
                         SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){new RetrievalNode()
                         {
 
@@ -84,19 +90,16 @@ namespace ClientServer
                                 Console.WriteLine("Length=" + x.GetDecodedString());
                             }
                         },
-                        new RetrievalNode()
+                         });
+                        
+                        SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){new RetrievalNode()
                         {
 
-                            direct = (x) =>
-                            {
-                                data = x;
-                            }
-                        } });
+                            direct=cm.completed, motive="message"
+                        } }) ;
                         
 
-                        cm.completed?.Invoke(data);
-
-                        client.Close();
+                        
                     }
                 }
             });

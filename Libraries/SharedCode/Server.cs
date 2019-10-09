@@ -37,7 +37,7 @@ namespace ClientServer
             ///////
 
             listener = new TcpListener(IPAddress.Any, args.port);
-                listener.Start();
+            listener.Start();
 
             task = new Task(new Action(() =>
             {
@@ -45,42 +45,43 @@ namespace ClientServer
                 while (1 == 1)
                 {
                     TcpClient client = listener.AcceptTcpClient();//accept new client
-
-                    NetworkData output = null;
                     Command comm = new Command();
                     long length = 0;
+                    Console.WriteLine("connected client");
                     SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){
                     new RetrievalNode(){direct = (x) =>//length
                         {
                             length = Convert.ToInt64(x.GetDecodedString());
-                            
+
                         }, motive="length"
                     },
                     new RetrievalNode(){direct = (x) =>//operation
                     {
                             string operation = x.GetDecodedString();
+                        bool found = false;
                             foreach (var command in commands)
                             {
                                 if (command.operation == operation)
                                 {
                                     comm = command;
+                                found = true;
                                 }
                             }
+                            if(!found)
+                            Console.WriteLine("no command found by the name of " + operation);
                         }, motive="operation"
-                    },
-                    new RetrievalNode(){direct = (x) =>//message
+                    },new RetrievalNode(){direct = (x) =>//message
                         {
-                            output = comm.action?.Invoke(x);
-                        }, motive="message"} });
-                    
-                    SendRecieveUtil.SendBytes(client, output, args);
-                    
+                            var output = comm.action(x);
+                            SendRecieveUtil.SendBytes(client, output, args);
+                        }, motive="message"}
+                    });
                 }
-                
+
             }));
             task.ConfigureAwait(false);
             task.Start();
-           
+
         }//start server
 
         

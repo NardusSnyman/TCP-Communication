@@ -15,19 +15,8 @@ namespace ConsoleClient
     {
         static void Main(string[] args)
         {
-            Client client = new Client(new ConnectionArguments("192.168.0.143", 998, 2048));
+            Client client = new Client(ConnectionArguments.fromLocal(998, 2048));
             Console.WriteLine(client.args.ip + ":" + client.args.port);
-            client.universalDebug = new ExtendedDebug()
-            {
-                mainProcessDebug = (x) =>
-                {
-                        Console.WriteLine(x);
-                },
-                closeUpDebug = (x) =>
-                {
-                        Console.WriteLine(x);
-                }
-            };
             
             var t = new Task(()=>
             {
@@ -38,11 +27,14 @@ namespace ConsoleClient
 
 
 
-            Console.Write("Path: ");
-            var txt = @"C:\Users\nicho\Pictures\Camera Roll\Capture.PNG";
-            var dat = NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)).GetDecodedBytes();
-            File.WriteAllBytes(new FileInfo(txt).DirectoryName + @"\NewFile2" + new FileInfo(txt).Extension, dat);
-            client.Communicate("repeat", NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)), (x) => { File.WriteAllBytes(new FileInfo(txt).DirectoryName + @"\NewFile" + new FileInfo(txt).Extension, x.GetDecodedBytes()); });
+            var txt = @"C:\Users\nicho\Pictures\Camera Roll\Capture2.PNG";
+            var txt2 = @"C:\Users\nicho\Pictures\Camera Roll\Capture3.PNG";
+            client.Communicate("repeat", NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)), (x) => {
+                File.WriteAllBytes(txt2, x.GetDecodedBytes());
+                Console.WriteLine("complete");
+            }, new Debug() { main=(x)=> { Console.WriteLine(x); }, close_up=(x)=> { Console.WriteLine(x); } });
+
+
             while (1 == 1)
             {
                 

@@ -53,12 +53,13 @@ namespace ClientServer
             var stream = c.GetStream();
             foreach (var node in nodes)
             {
-                var dat = getData(stream, ref overread, conn.buffer_size, separator);//size
+                var dat = getData(stream, ref overread, conn.buffer_size, separator, null);//size
                 node.direct?.Invoke(dat);
             }
         }
-        public static NetworkData getData(Stream stream, ref NetworkData overread, int buffer_size, string separator)
+        public static NetworkData getData(Stream stream, ref NetworkData overread, int buffer_size, string separator, Action<NetworkData> bytes)
         {
+
             int onlyonce = 0;
                 int index = 0;
                 StringBuilder sb = new StringBuilder();
@@ -70,10 +71,12 @@ namespace ClientServer
                 string dat = overread.GetEncodedString();
                 if ((index = dat.IndexOf(separator)) != -1)//contains ender in overread
                 {
+                  
                     var return_ = NetworkData.fromEncodedString(dat.Substring(0, index));//return data
 
                     overread = NetworkData.fromEncodedString(dat.Substring(index + separator.Length));//out overread
-
+                    bytes?.Invoke(return_);
+                    
                     return return_;//return data
                 }
                 else {//overread does not contain ender
@@ -86,7 +89,6 @@ namespace ClientServer
                    
                     if ((index = data.IndexOf(separator)) != -1)//contains ender in list
                     {
-                        
                         sb.Append(data);
                         
                         int index2 = sb.Length - (data.Length - index);
@@ -95,11 +97,15 @@ namespace ClientServer
                         var return_ = NetworkData.fromEncodedString(sb.ToString().Substring(0, index2));
                       
                         overread = NetworkData.fromEncodedString(data.Substring(index + separator.Length));
+                        bytes?.Invoke(return_);
                         return return_;
 
                     }
                     else
                     {
+
+                        bytes?.Invoke(NetworkData.fromEncodedString(data));
+                        if(bytes == null)
                         sb.Append(data);
                     }
                 }
