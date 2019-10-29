@@ -19,9 +19,11 @@ namespace ClientServer
         public ConnectionArguments args;//connection arguments
         NetworkData overread;//data storage for overread data
         public Queue<ClientMessage> command_queue = new Queue<ClientMessage>();
+        public Action<string> debug;
         public Client(ConnectionArguments args1)
         {
             args = args1;
+            if (debug == null) debug = new Action<string>((x) => { });
         }
         //-----------------
         int temp = 0;
@@ -33,11 +35,13 @@ namespace ClientServer
             cm.operation = operation;
             cm.message = message;
             command_queue.Enqueue(cm);
+            debug("communicate");
          }
 
         
         public Action clientThread()
         {
+            TcpClient client = new TcpClient();
             Action act = new Action(()=>
             {
                 while (true)
@@ -46,21 +50,23 @@ namespace ClientServer
                     {
                         
 
-                        TcpClient client = new TcpClient();
+                        
                         
                         ClientMessage cm = command_queue.Dequeue();
-
+                        debug("communicate pulled");
                     start:
 
 
                         try
                         {
+                            debug("attempting connection");
                             client.Connect(args.ip, args.port);
                         }
                         catch (Exception e)
                         {
                             Thread.Sleep(1200);
                             temp++;
+                            debug("failed connection");
                             if (temp > args.server_reconnect_attempts)
                             {
                                 temp = 0;
@@ -71,6 +77,7 @@ namespace ClientServer
 
                             goto start;
                         }
+                        debug("connection complete");
                         string msg = "";
                         if (cm.message != null)
                         {
@@ -80,14 +87,14 @@ namespace ClientServer
                             new List<string>() { cm.operation, msg  }.Select(x=>NetworkData.fromDecodedString(x).GetEncodedString())));
                         dat.InitStream();
                         SendRecieveUtil.SendBytes(client, dat, args);
-
+                        debug("Sending bytes");
 
                         SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){new RetrievalNode()
                         {
 
                             direct = (x) =>//length
                             {
-                                Console.WriteLine("Length=" + x.GetDecodedString());
+                                debug("Length=" + x.GetDecodedString());
                             }
                         },
                          });
@@ -101,6 +108,7 @@ namespace ClientServer
 
                         
                     }
+                    System.Threading.Thread.Sleep(1);
                 }
             });
             client_act = act;

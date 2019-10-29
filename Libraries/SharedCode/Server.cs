@@ -30,33 +30,38 @@ namespace ClientServer
         public TcpListener listener;//server main listener
         public List<Command> commands = new List<Command>();//server commands
         Task task;//server task
+        public Action<string> debug;
         NetworkData overread = new NetworkData();//data storage for overread data
 
         public void Start()
         {
             ///////
-
+            if (debug == null)
+                debug = new Action<string>((x) => { });
             listener = new TcpListener(IPAddress.Any, args.port);
             listener.Start();
 
             task = new Task(new Action(() =>
             {
-
+                debug("started");
                 while (1 == 1)
                 {
+                debug("waiting");
                     TcpClient client = listener.AcceptTcpClient();//accept new client
+                    debug("Client Connected");
                     Command comm = new Command();
                     long length = 0;
-                    Console.WriteLine("connected client");
+                    debug("connected client");
                     SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){
                     new RetrievalNode(){direct = (x) =>//length
                         {
                             length = Convert.ToInt64(x.GetDecodedString());
-
+                            debug(length.ToString());
                         }, motive="length"
                     },
                     new RetrievalNode(){direct = (x) =>//operation
                     {
+                        debug(x.GetDecodedString());
                             string operation = x.GetDecodedString();
                         bool found = false;
                             foreach (var command in commands)
@@ -68,7 +73,7 @@ namespace ClientServer
                                 }
                             }
                             if(!found)
-                            Console.WriteLine("no command found by the name of " + operation);
+                            debug("no command found by the name of " + operation);
                         }, motive="operation"
                     },new RetrievalNode(){direct = (x) =>//message
                         {
