@@ -48,16 +48,20 @@ namespace ClientServer
         }
 
 
-        public static void RecieveBytes(TcpClient c, ref NetworkData overread, ConnectionArguments conn, List<RetrievalNode> nodes)
+        public static void RecieveBytes(TcpClient c, ref NetworkData overread, ConnectionArguments conn, Thread thr, int total, Action<double> prog, List<RetrievalNode> nodes)
         {
             var stream = c.GetStream();
             foreach (var node in nodes)
             {
-                var dat = getData(stream, ref overread, conn.buffer_size, separator, null);//size
-                node.direct?.Invoke(dat);
+                var dat = getData(stream, ref overread, conn.buffer_size, separator, total, prog, null);//size
+                
+                Thread thre = new Thread(() => { node.direct?.Invoke(dat); });
+                thre.CurrentUICulture = thr.CurrentUICulture;
+                thre.CurrentCulture = thr.CurrentCulture;
+                thre.Start();
             }
         }
-        public static NetworkData getData(Stream stream, ref NetworkData overread, int buffer_size, string separator, Action<NetworkData> bytes)
+        public static NetworkData getData(Stream stream, ref NetworkData overread, int buffer_size, string separator, int total, Action<double> prog, Action<NetworkData> bytes)
         {
 
             int onlyonce = 0;
@@ -98,6 +102,7 @@ namespace ClientServer
                       
                         overread = NetworkData.fromEncodedString(data.Substring(index + separator.Length));
                         bytes?.Invoke(return_);
+                        prog?.Invoke(sb.Length / total);
                         return return_;
 
                     }
@@ -105,8 +110,11 @@ namespace ClientServer
                     {
 
                         bytes?.Invoke(NetworkData.fromEncodedString(data));
-                        if(bytes == null)
-                        sb.Append(data);
+                        if (bytes == null)
+                        {
+                            sb.Append(data);
+                            prog?.Invoke(sb.Length / total);
+                        }
                     }
                 }
             }

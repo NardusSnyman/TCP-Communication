@@ -39,8 +39,9 @@ namespace ClientServer
          }
 
         
-        public Action clientThread()
+        public Action clientThread(Thread thr)
         {
+           
             TcpClient client = new TcpClient();
             Action act = new Action(()=>
             {
@@ -88,18 +89,18 @@ namespace ClientServer
                         dat.InitStream();
                         SendRecieveUtil.SendBytes(client, dat, args);
                         debug("Sending bytes");
-
-                        SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){new RetrievalNode()
+                        int length = 0;
+                        SendRecieveUtil.RecieveBytes(client, ref overread, args, thr, 0, null, new List<RetrievalNode>(){new RetrievalNode()
                         {
 
                             direct = (x) =>//length
                             {
-                                debug("Length=" + x.GetDecodedString());
+                                length = int.Parse(x.GetDecodedString());
                             }
                         },
                          });
                         
-                        SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){new RetrievalNode()
+                        SendRecieveUtil.RecieveBytes(client, ref overread, args, thr, length, cm.progress, new List<RetrievalNode>(){new RetrievalNode()
                         {
 
                             direct=cm.completed, motive="message"
