@@ -17,10 +17,10 @@ namespace ConsoleClient
         {
             Client client = new Client(ConnectionArguments.fromLocal(998, 2048));
             Console.WriteLine(client.args.ip + ":" + client.args.port);
-            
+            Thread th = Thread.CurrentThread;
             var t = new Task(()=>
             {
-                client.clientThread().Invoke();
+                client.clientThread(th).Invoke();
             });
             t.ConfigureAwait(false);
             t.Start();
@@ -29,10 +29,11 @@ namespace ConsoleClient
 
             var txt = @"C:\Users\nicho\Pictures\Camera Roll\Capture2.PNG";
             var txt2 = @"C:\Users\nicho\Pictures\Camera Roll\Capture3.PNG";
-            client.Communicate("repeat", NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)), (x) => {
+            client.Communicate("repeat", NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)), (x) =>
+            {
                 File.WriteAllBytes(txt2, x.GetDecodedBytes());
                 Console.WriteLine("complete");
-            }, new Debug() { main=(x)=> { Console.WriteLine(x); }, close_up=(x)=> { Console.WriteLine(x); } });
+            });
 
 
             while (1 == 1)
