@@ -52,7 +52,7 @@ namespace ClientServer
                     Command comm = new Command();
                     long length = 0;
                     debug("connected client");
-                    SendRecieveUtil.RecieveBytes(client, ref overread, args, new List<RetrievalNode>(){
+                    SendRecieveUtil.RecieveBytes(client, ref overread, args, Thread.CurrentThread, 0, null, new List<RetrievalNode>(){
                     new RetrievalNode(){direct = (x) =>//length
                         {
                             length = Convert.ToInt64(x.GetDecodedString());
