@@ -20,19 +20,15 @@ namespace ConsoleClient
             Thread th = Thread.CurrentThread;
             var t = new Task(()=>
             {
-                client.clientThread(th).Invoke();
+                client.clientThread().Invoke();
             });
             t.ConfigureAwait(false);
             t.Start();
 
 
-
-            var txt = @"C:\Users\nicho\Pictures\Camera Roll\Capture2.PNG";
-            var txt2 = @"C:\Users\nicho\Pictures\Camera Roll\Capture3.PNG";
-            client.Communicate("repeat", NetworkData.fromDecodedBytes(File.ReadAllBytes(txt)), (x) =>
+            client.Communicate("repeat", NetworkData.fromDecodedString("hello"), (x) =>
             {
-                File.WriteAllBytes(txt2, x.GetDecodedBytes());
-                Console.WriteLine("complete");
+                Console.WriteLine(x.GetDecodedString());
             });
 
 

@@ -26,7 +26,7 @@ namespace ClientServer
         }
         //-----------------
         public ConnectionArguments args;//connection arguments
-        
+
         public TcpListener listener;//server main listener
         public List<Command> commands = new List<Command>();//server commands
         Task task;//server task
@@ -46,21 +46,33 @@ namespace ClientServer
                 debug("started");
                 while (1 == 1)
                 {
-                debug("waiting");
+                    debug("waiting");
                     TcpClient client = listener.AcceptTcpClient();//accept new client
-                    debug("Client Connected");
-                    Command comm = new Command();
-                    long length = 0;
-                    debug("connected client");
-                    SendRecieveUtil.RecieveBytes(client, ref overread, args, Thread.CurrentThread, 0, null, new List<RetrievalNode>(){
+                    Thread thr = new Thread(new ThreadStart(() => { }));
+                    thr = new Thread(new ThreadStart(() =>
+                    {
+
+                        TcpClient cli = client;
+                        
+                        debug("Client Connected");
+                        while (cli.Connected)
+                        {
+                            Command comm = new Command();
+                            long length = 0;
+                            debug("wait for read");
+                            
+                           
+                            SendRecieveUtil.RecieveBytes(cli, ref overread, args, 0, null, new List<RetrievalNode>(){
                     new RetrievalNode(){direct = (x) =>//length
                         {
+                            if(x!=null)
                             length = Convert.ToInt64(x.GetDecodedString());
                             debug(length.ToString());
                         }, motive="length"
                     },
                     new RetrievalNode(){direct = (x) =>//operation
                     {
+                        if(x!=null){
                         debug(x.GetDecodedString());
                             string operation = x.GetDecodedString();
                         bool found = false;
@@ -74,13 +86,24 @@ namespace ClientServer
                             }
                             if(!found)
                             debug("no command found by the name of " + operation);
+                        }
                         }, motive="operation"
                     },new RetrievalNode(){direct = (x) =>//message
                         {
+                            if(x!=null){
                             var output = comm.action(x);
-                            SendRecieveUtil.SendBytes(client, output, args);
+                            SendRecieveUtil.SendBytes(cli, output, args);
+                            }
                         }, motive="message"}
                     });
+                        }
+                        debug("client closed");
+                        thr.Abort();
+                    }))
+                    {
+                        IsBackground = true
+                    };
+                    thr.Start();
                 }
 
             }));
@@ -89,7 +112,7 @@ namespace ClientServer
 
         }//start server
 
-        
+
 
         public void Stop()//stop server
         {

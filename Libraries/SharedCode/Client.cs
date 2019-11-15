@@ -39,12 +39,35 @@ namespace ClientServer
          }
 
         
-        public Action clientThread(Thread thr)
+        public Action clientThread()
         {
            
             TcpClient client = new TcpClient();
             Action act = new Action(()=>
             {
+            start:
+
+
+                try
+                {
+                    debug("attempting connection");
+                    client.Connect(args.ip, args.port);
+                }
+                catch (Exception e)
+                {
+                    Thread.Sleep(1200);
+                    temp++;
+                    debug("failed connection");
+                    if (temp > args.server_reconnect_attempts)
+                    {
+                        temp = 0;
+                        client.Close();
+                        return;
+                    }
+
+                    goto start;
+                }
+                debug("connection complete");
                 while (true)
                 {
                     if (command_queue.Count > 0)
@@ -55,30 +78,7 @@ namespace ClientServer
                         
                         ClientMessage cm = command_queue.Dequeue();
                         debug("communicate pulled");
-                    start:
 
-
-                        try
-                        {
-                            debug("attempting connection");
-                            client.Connect(args.ip, args.port);
-                        }
-                        catch (Exception e)
-                        {
-                            Thread.Sleep(1200);
-                            temp++;
-                            debug("failed connection");
-                            if (temp > args.server_reconnect_attempts)
-                            {
-                                temp = 0;
-                                cm.failed?.Invoke();
-                                client.Close();
-                                return;
-                            }
-
-                            goto start;
-                        }
-                        debug("connection complete");
                         string msg = "";
                         if (cm.message != null)
                         {
@@ -90,7 +90,7 @@ namespace ClientServer
                         SendRecieveUtil.SendBytes(client, dat, args);
                         debug("Sending bytes");
                         int length = 0;
-                        SendRecieveUtil.RecieveBytes(client, ref overread, args, thr, 0, null, new List<RetrievalNode>(){new RetrievalNode()
+                        SendRecieveUtil.RecieveBytes(client, ref overread, args, 0, null, new List<RetrievalNode>(){new RetrievalNode()
                         {
 
                             direct = (x) =>//length
@@ -100,15 +100,15 @@ namespace ClientServer
                         },
                          });
                         
-                        SendRecieveUtil.RecieveBytes(client, ref overread, args, thr, length, cm.progress, new List<RetrievalNode>(){new RetrievalNode()
+                        SendRecieveUtil.RecieveBytes(client, ref overread, args, length, cm.progress, new List<RetrievalNode>(){new RetrievalNode()
                         {
 
                             direct=cm.completed, motive="message"
                         } }) ;
-                        
 
-                        
+
                     }
+                    
                     System.Threading.Thread.Sleep(1);
                 }
             });

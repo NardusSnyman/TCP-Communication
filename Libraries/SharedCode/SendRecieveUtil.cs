@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -48,20 +49,16 @@ namespace ClientServer
         }
 
 
-        public static void RecieveBytes(TcpClient c, ref NetworkData overread, ConnectionArguments conn, Thread thr, int total, Action<double> prog, List<RetrievalNode> nodes)
+        public static void RecieveBytes(TcpClient c, ref NetworkData overread, ConnectionArguments conn, int total, Action<double> prog, List<RetrievalNode> nodes)
         {
             var stream = c.GetStream();
             foreach (var node in nodes)
             {
-                var dat = getData(stream, ref overread, conn.buffer_size, separator, total, prog, null);//size
-                
-                Thread thre = new Thread(() => { node.direct?.Invoke(dat); });
-                thre.CurrentUICulture = thr.CurrentUICulture;
-                thre.CurrentCulture = thr.CurrentCulture;
-                thre.Start();
+                var dat = getData(c, stream, ref overread, conn.buffer_size, separator, total, prog, null);//size
+                node.direct?.Invoke(dat);
             }
         }
-        public static NetworkData getData(Stream stream, ref NetworkData overread, int buffer_size, string separator, int total, Action<double> prog, Action<NetworkData> bytes)
+        public static NetworkData getData(TcpClient c, Stream stream, ref NetworkData overread, int buffer_size, string separator, int total, Action<double> prog, Action<NetworkData> bytes)
         {
 
             int onlyonce = 0;
@@ -87,7 +84,14 @@ namespace ClientServer
                     if (onlyonce == 0)
                         sb.Append(overread.GetEncodedString());
                     onlyonce = 1;
-                    int length = stream.Read(buffer, 0, buffer_size);//read string represented bytes
+                    int length = 0;
+                    try
+                    {
+                        length = stream.Read(buffer, 0, buffer_size);//read string represented bytes
+                    }catch(Exception e)
+                    {
+                        break;
+                    }
                     string data = Encoding.UTF8.GetString(buffer, 0, length);
 
                    
@@ -118,6 +122,7 @@ namespace ClientServer
                     }
                 }
             }
+            return null;
         }
         public static string toUnicodeString(char unicode, Action<string> debug)
         {
