@@ -6,7 +6,7 @@ C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\ob
 C:\Users\nicho_fmwix7m\Documents\GitHub\DotNet-TCP-Communication\NetFramework\obj\Debug\NetFramework.pdb
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetFramework\bin\Debug\NetFramework.dll
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetFramework\bin\Debug\NetFramework.pdb
-C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetFramework\obj\Debug\NetFramework.csprojAssemblyReference.cache
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetFramework\obj\Debug\NetFramework.csproj.CoreCompileInputs.cache
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetFramework\obj\Debug\NetFramework.dll
 C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetFramework\obj\Debug\NetFramework.pdb
+C:\Users\nicho\Documents\GitHub\DotNet-TCP-Communication\Libraries\NetFramework\obj\Debug\NetFramework.csprojAssemblyReference.cache

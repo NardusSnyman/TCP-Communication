@@ -9,7 +9,7 @@ namespace ClientServer
     public class EncodingClasses
     {
         private static char filler = '_';//must be availabe in utf8
-        public static int expanded_length = 4;//must be > 5
+        public static int expanded_length = 5;//must be > 5
         public class NetworkData//contains filler for constant 
         {
             public List<string> bytes;
@@ -32,6 +32,8 @@ namespace ClientServer
             }
             public static NetworkData fromDecodedString(string data)
             {
+                if (data == null)
+                    data = "";
                 var dat = toNet(data.ToCharArray());
 
                 return new NetworkData() { bytes = dat } ;

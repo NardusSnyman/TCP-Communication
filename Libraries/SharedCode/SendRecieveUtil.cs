@@ -15,7 +15,7 @@ namespace ClientServer
     public class SendRecieveUtil
     {
         public static string separator { get { string x = ""; while (x.Length < expanded_length) x = 9 + x; return x; } }
-        public static void SendBytes(TcpClient c, NetworkData data1, ConnectionArguments conn)
+        public static void SendBytes(TcpClient c, NetworkData data1, ConnectionArguments conn, int port)
         {
             NetworkStream stream = c.GetStream();
         start:
@@ -40,7 +40,7 @@ namespace ClientServer
                 }
                 else
                 {
-                    c.Connect(conn.ip, conn.port);
+                    c.Connect(conn.ip, port);
                     stream = c.GetStream();
                 }
             }
@@ -54,20 +54,26 @@ namespace ClientServer
             var stream = c.GetStream();
             foreach (var node in nodes)
             {
-                var dat = getData(c, stream, ref overread, conn.buffer_size, separator, total, prog, null);//size
-                node.direct?.Invoke(dat);
+                try
+                {
+                    var dat = getData(c, stream, ref overread, conn.buffer_size, separator, total, prog, null);//size
+                    node.direct?.Invoke(dat);
+                }catch(Exception e)
+                {
+
+                }
             }
         }
         public static NetworkData getData(TcpClient c, Stream stream, ref NetworkData overread, int buffer_size, string separator, int total, Action<double> prog, Action<NetworkData> bytes)
         {
-
+            Stopwatch sw = new Stopwatch();
             int onlyonce = 0;
                 int index = 0;
                 StringBuilder sb = new StringBuilder();
                 byte[] buffer = new byte[buffer_size];
                 if (overread == null)
                     overread = NetworkData.fromDecodedString("");
-            while (true) {
+            while (c.Connected) {
 
                 string dat = overread.GetEncodedString();
                 if ((index = dat.IndexOf(separator)) != -1)//contains ender in overread
@@ -87,37 +93,51 @@ namespace ClientServer
                     int length = 0;
                     try
                     {
+                        
                         length = stream.Read(buffer, 0, buffer_size);//read string represented bytes
                     }catch(Exception e)
                     {
                         break;
                     }
-                    string data = Encoding.UTF8.GetString(buffer, 0, length);
-
-                   
-                    if ((index = data.IndexOf(separator)) != -1)//contains ender in list
+                    if (length == 0)
                     {
-                        sb.Append(data);
-                        
-                        int index2 = sb.Length - (data.Length - index);
-
-
-                        var return_ = NetworkData.fromEncodedString(sb.ToString().Substring(0, index2));
-                      
-                        overread = NetworkData.fromEncodedString(data.Substring(index + separator.Length));
-                        bytes?.Invoke(return_);
-                        prog?.Invoke(sb.Length / total);
-                        return return_;
-
+                        if (!sw.IsRunning)
+                            sw.Start();
+                        if (sw.ElapsedMilliseconds > TimeSpan.FromSeconds(0.5).TotalMilliseconds)
+                        {
+                            c.Close();
+                            break;
+                        }
                     }
                     else
                     {
+                        sw.Reset();
+                        string data = Encoding.UTF8.GetString(buffer, 0, length);
 
-                        bytes?.Invoke(NetworkData.fromEncodedString(data));
-                        if (bytes == null)
+                        if ((index = data.IndexOf(separator)) != -1)//contains ender in list
                         {
                             sb.Append(data);
+
+                            int index2 = sb.Length - (data.Length - index);
+
+
+                            var return_ = NetworkData.fromEncodedString(sb.ToString().Substring(0, index2));
+
+                            overread = NetworkData.fromEncodedString(data.Substring(index + separator.Length));
+                            bytes?.Invoke(return_);
                             prog?.Invoke(sb.Length / total);
+                            return return_;
+
+                        }
+                        else
+                        {
+
+                            bytes?.Invoke(NetworkData.fromEncodedString(data));
+                            if (bytes == null)
+                            {
+                                sb.Append(data);
+                                prog?.Invoke(sb.Length / total);
+                            }
                         }
                     }
                 }

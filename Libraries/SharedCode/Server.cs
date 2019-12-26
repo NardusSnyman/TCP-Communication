@@ -27,53 +27,96 @@ namespace ClientServer
         //-----------------
         public ConnectionArguments args;//connection arguments
 
-        public TcpListener listener;//server main listener
+        public List<TcpListener> listeners;//server main listener
         public List<Command> commands = new List<Command>();//server commands
-        Task task;//server task
-        public Action<string> debug;
+        public Action<string, int> debug;//message and level  1=surface, 2=base events, 3=debug data
+
         NetworkData overread = new NetworkData();//data storage for overread data
 
         public void Start()
         {
             ///////
-            if (debug == null)
-                debug = new Action<string>((x) => { });
-            listener = new TcpListener(IPAddress.Any, args.port);
-            listener.Start();
-
-            task = new Task(new Action(() =>
+            foreach (int port in args.ports)
             {
-                debug("started");
-                while (1 == 1)
+                new Task(() =>
                 {
-                    debug("waiting");
-                    TcpClient client = listener.AcceptTcpClient();//accept new client
-                    Thread thr = new Thread(new ThreadStart(() => { }));
-                    thr = new Thread(new ThreadStart(() =>
-                    {
+                    if (debug == null)
+                        debug = new Action<string, int>((x, y) => { });
+                    TcpListener listener = new TcpListener(IPAddress.Any, port);
+                    listener.Start();
 
-                        TcpClient cli = client;
-                        
-                        debug("Client Connected");
-                        while (cli.Connected)
+
+                    debug("[SYS]: started server with port " + port, 1);
+
+                    while (true)
+                    {
+                        debug($"[{port}]: waiting", 1);
+                        while (!listener.Pending())
                         {
-                            Command comm = new Command();
-                            long length = 0;
-                            debug("wait for read");
-                            
-                           
-                            SendRecieveUtil.RecieveBytes(cli, ref overread, args, 0, null, new List<RetrievalNode>(){
-                    new RetrievalNode(){direct = (x) =>//length
+
+                        }
+
+                        try
                         {
-                            if(x!=null)
+                            Thread thr = new Thread(new ThreadStart(() =>
+                            {
+
+                                ConnectToClient(listener, port);
+                            }));
+                            thr.IsBackground = true;
+                            thr.Start();
+
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
+
+
+                    }
+                }).Start();
+            }
+        }//start server
+
+        private void ConnectToClient(TcpListener listener, int port)
+        {
+            try
+            {
+                TcpClient cli = listener.AcceptTcpClient();//accept new client
+
+                debug($"[{port}]: Client Connected", 1);
+                int count = 0;
+
+                while (cli.Connected && count < 5)
+                {
+                    Command comm = new Command();
+                    long length = 0;
+                    debug($"[{port}]: wait for read", 1);
+
+
+                    SendRecieveUtil.RecieveBytes(cli, ref overread, args, 0, null, 
+                        new List<RetrievalNode>(){
+                                new RetrievalNode(){direct = (x) =>//length
+                            {
+                            try{
                             length = Convert.ToInt64(x.GetDecodedString());
-                            debug(length.ToString());
+                            }catch(Exception e)
+                            {
+
+                            }
+                                if(length == 0)
+                                {
+                                    count++;
+                                }else
+                                    count = 0;
+                                
+                                debug($"[{port}]: length={length}", 3);
                         }, motive="length"
                     },
                     new RetrievalNode(){direct = (x) =>//operation
                     {
                         if(x!=null){
-                        debug(x.GetDecodedString());
+                        debug(x.GetDecodedString(), 3);
                             string operation = x.GetDecodedString();
                         bool found = false;
                             foreach (var command in commands)
@@ -81,42 +124,39 @@ namespace ClientServer
                                 if (command.operation == operation)
                                 {
                                     comm = command;
-                                found = true;
+                                    found = true;
+                                     debug($"[{port}]: operation={operation}", 3);
                                 }
                             }
                             if(!found)
-                            debug("no command found by the name of " + operation);
+                            debug("no command found by the name of " + operation, 2);
                         }
                         }, motive="operation"
-                    },new RetrievalNode(){direct = (x) =>//message
+                            },
+                    new RetrievalNode(){direct = (x) =>//message
                         {
                             if(x!=null){
+                                debug($"[{port}]: data processed and sent", 1);
+                                 debug($"[{port}]: message recieved", 2);
                             var output = comm.action(x);
-                            SendRecieveUtil.SendBytes(cli, output, args);
+                            SendRecieveUtil.SendBytes(cli, output, args, port);
                             }
                         }, motive="message"}
-                    });
-                        }
-                        debug("client closed");
-                        thr.Abort();
-                    }))
-                    {
-                        IsBackground = true
-                    };
-                    thr.Start();
+                        });
                 }
+                debug($"[{port}]: Client closed connection", 1);
 
-            }));
-            task.ConfigureAwait(false);
-            task.Start();
+            }
+            catch(Exception e)
+            {
 
-        }//start server
+            }
 
+        }
 
-
-        public void Stop()//stop server
+        public void Stop(TcpListener listener)//stop server
         {
-            task.Dispose();
+            listener.Stop();
         }
     }
 }
