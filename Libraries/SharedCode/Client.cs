@@ -15,6 +15,7 @@ namespace ClientServer
         NetworkData overread;//data storage for overread data
         public Queue<ClientMessage> command_queue = new Queue<ClientMessage>();
         public Action<string, int> debug;//message and level  1=surface, 2=base events, 3=debug data
+        public ThreadDefiner definer;
         public Client(ConnectionArguments args1)
         {
             args = args1;
@@ -107,7 +108,7 @@ namespace ClientServer
                                     SendRecieveUtil.RecieveBytes(c, ref overread, args, length, cm.progress, debug, new List<RetrievalNode>() { new RetrievalNode()
                             {
 
-                                direct = (x) => { cm.completed(x); c.Close(); debug($"[{c.port}]: Client closed", 0); debug($"[{c.port}]: data={x.GetDecodedString()}", 3); }, motive = "message"
+                                direct = (x) => {  definer.Define(cm.completed); c.Close(); debug($"[{c.port}]: Client closed", 0); debug($"[{c.port}]: data={x.GetDecodedString()}", 3); }, motive = "message"
                             } });//get final data and close client
 
 
