@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using static ClientServer.EncodingClasses;
 using System.Threading;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClientServer
 {
@@ -31,79 +32,94 @@ namespace ClientServer
             debug("[SYS]: added operation to queue", 1);
         }
 
-        List<TcpClient> clients = new List<TcpClient>();
+        List<ConnectClient> clients = new List<ConnectClient>();
         public void clientThread(out Action start)
         {
             for (int x = 0; x < args.ports.Count; x++)
             {
                 debug($"[SYS]: initialized port {args.ports[x]}", 1);
-                clients.Add(new TcpClient());
+                clients.Add(new ConnectClient() { port=args.ports[x], ip=args.ip });
             }
 
             start = new Action(() =>
             {
-
-                //try connecting
-
-
-                while (true)
+                new Task(() =>
                 {
-
-
-                    if (command_queue.Count > 0)
+                    while (true)
                     {
-
-                        for (int i = 0; i < clients.Count; i++)
+                        if (command_queue.Count > 0)
                         {
-                            if (command_queue.Count == 0)
-                                break;
-                                int port = args.ports[i];
-                            TcpClient client = clients[i];
-                            if (client.Connected)
+                            debug($"[SYS]: command recieved", 3);
+                            for (int i = 0; i < clients.Count; i++)
                             {
-                                debug($"[{port}]: busy", 2);
-                                continue;
-                            }
-                            client.Connect(args.ip, args.ports[i]);//connect to server
-                            ClientMessage cm = command_queue.Dequeue();//get args
-                            debug($"[{port}]: communication pulled", 1);
+                                if (command_queue.Count == 0)
+                                    break;
+                                
+                                ConnectClient c = clients[i];
+                                debug($"[SYS]: port {c.port} available", 3);
+                                if (c.Connected)
+                                {
+                                    debug($"[{c.port}]: busy", 2);
+                                    continue;
+                                }
+                                
+                                  
+                                    debug($"[{c.port}]: checking ({command_queue.Count})", 0);
+                                    ClientMessage cm = command_queue.Dequeue();//get args
+                                    debug($"[{c.port}]: data pulled from queue", 0);
 
-                            string msg = "";
-                            if (cm.message != null)
-                            {
-                                msg = cm.message.GetDecodedString();//initialize message
-                            }
-                            NetworkData dat = NetworkData.fromEncodedString(String.Join(SendRecieveUtil.separator,
-                                new List<string>() { cm.operation, msg }.Select(x => NetworkData.fromDecodedString(x).GetEncodedString())));
-                            dat.InitStream();//initialize encoded data
+                                var t = new Task(() =>
+                                {
+                                    try
+                                    {
+                                        c.Connect(args.ip, c.port);//connect to server
+                                        debug($"[SYS]: port {c.port} connected", 2);
+                                    }
+                                    catch (SocketException e)
+                                    {
+                                        debug($"[SYS]: server is not available", 4);
+                                    }
 
-                            SendRecieveUtil.SendBytes(client, dat, args, port);//send bytes
-                            debug($"[{port}]: Sending bytes", 1);
-                            int length = 0;
-                            SendRecieveUtil.RecieveBytes(client, ref overread, args, 0, null, new List<RetrievalNode>(){new RetrievalNode()
+                                    string msg = "";
+                                    if (cm.message != null)
+                                    {
+                                        msg = cm.message.GetDecodedString();//initialize message
+                                    }
+                                    NetworkData dat = NetworkData.fromEncodedString(String.Join(SendRecieveUtil.separator,
+                                        new List<string>() { cm.operation, msg }.Select(x => NetworkData.fromDecodedString(x).GetEncodedString())));
+                                    debug($"[{c.port}]: Sending bytes", 1);
+                                    SendRecieveUtil.SendBytes(c, dat, args, debug);//send bytes
+
+                                    int length = 0;
+                                    SendRecieveUtil.RecieveBytes(c, ref overread, args, 0, null, debug, new List<RetrievalNode>() { new RetrievalNode()
                             {
 
-                            direct = (x) =>//length
-                            {
-                                if(x != null)
-                                length = int.Parse(x.GetDecodedString());
-                                debug($"[{port}]: length={length}", 3);
-                            }
+                                direct = (x) =>//length
+                                {
+                                    if (x != null && x.GetDecodedString() != "null")
+                                        length = int.Parse(x.GetDecodedString());
+                                    else
+                                        
+                                    debug($"[{c.port}]: length={length}", 3);
+                                }, motive = "length"
                             },
-                            });//recieve bytes and get length
-
-                            SendRecieveUtil.RecieveBytes(client, ref overread, args, length, cm.progress, new List<RetrievalNode>(){new RetrievalNode()
+                                });//recieve bytes and get length
+                                    SendRecieveUtil.RecieveBytes(c, ref overread, args, length, cm.progress, debug, new List<RetrievalNode>() { new RetrievalNode()
                             {
 
-                            direct=(x)=>{ cm.completed(x); client.Close(); debug($"[{port}]: Client closed", 1); debug($"[{port}]: data={x.GetDecodedString()}", 3); }, motive="message"
+                                direct = (x) => { cm.completed(x); c.Close(); debug($"[{c.port}]: Client closed", 0); debug($"[{c.port}]: data={x.GetDecodedString()}", 3); }, motive = "message"
                             } });//get final data and close client
 
 
+                                });
+                                t.Start();
+                            }
                         }
-                    }
 
-                }
-                
+                    }
+                }).Start();
+
+
             });
 
         }

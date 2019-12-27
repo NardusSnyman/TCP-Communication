@@ -32,11 +32,17 @@ namespace ClientServer
             }
             public static NetworkData fromDecodedString(string data)
             {
-                if (data == null)
-                    data = "";
+                if (data == null || data == string.Empty)
+                    data = "null";
                 var dat = toNet(data.ToCharArray());
 
                 return new NetworkData() { bytes = dat } ;
+            }
+            public static NetworkData Empty()
+            {
+                var dat = toNet("null".ToCharArray());
+
+                return new NetworkData() { bytes = dat };
             }
             public static NetworkData fromDecodedBytes(byte[] data)
             {
@@ -70,14 +76,16 @@ namespace ClientServer
                 }
                 return bytes_.ToArray();
             }
-            public void InitStream()
+            public void InitStream(out int length_)
             {
                 string data = SendRecieveUtil.separator + String.Join("", bytes) + SendRecieveUtil.separator;//initial
                 long leng = data.Length + String.Join("", toNet(data.Length.ToString().ToCharArray())).Length;//length of initial and literal length together
                 string length = String.Join("", toNet(Convert.ToInt32(leng).ToString().ToCharArray()));
                 string data1 = length + data;//new predicted length ^ and data
+                
                 var dat = Encoding.UTF8.GetBytes(data1);//data
                 finished_stream = new MemoryStream(dat);
+                length_ = Convert.ToInt32(NetworkData.fromEncodedString(length).GetDecodedString());
             }
             private static List<string> toNet(char[] bytes1)
             {

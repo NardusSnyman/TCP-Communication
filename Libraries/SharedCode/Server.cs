@@ -55,22 +55,8 @@ namespace ClientServer
                         {
 
                         }
-
-                        try
-                        {
-                            Thread thr = new Thread(new ThreadStart(() =>
-                            {
-
-                                ConnectToClient(listener, port);
-                            }));
-                            thr.IsBackground = true;
-                            thr.Start();
-
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
+                            ConnectToClient(listener, port);
+ 
 
 
                     }
@@ -82,19 +68,18 @@ namespace ClientServer
         {
             try
             {
-                TcpClient cli = listener.AcceptTcpClient();//accept new client
+                ConnectClient cli = (ConnectClient)listener.AcceptTcpClient();//accept new client
 
-                debug($"[{port}]: Client Connected", 1);
+                debug($"[{port}]: Client Connected", 0);
                 int count = 0;
 
-                while (cli.Connected && count < 5)
-                {
+                
                     Command comm = new Command();
                     long length = 0;
                     debug($"[{port}]: wait for read", 1);
 
 
-                    SendRecieveUtil.RecieveBytes(cli, ref overread, args, 0, null, 
+                    SendRecieveUtil.RecieveBytes(cli, ref overread, args, 0, null, debug, 
                         new List<RetrievalNode>(){
                                 new RetrievalNode(){direct = (x) =>//length
                             {
@@ -137,19 +122,19 @@ namespace ClientServer
                         {
                             if(x!=null){
                                 debug($"[{port}]: data processed and sent", 1);
-                                 debug($"[{port}]: message recieved", 2);
+                                debug($"[{port}]: message recieved", 2);
                             var output = comm.action(x);
-                            SendRecieveUtil.SendBytes(cli, output, args, port);
+                            SendRecieveUtil.SendBytes(cli, output, args, debug);
                             }
                         }, motive="message"}
                         });
-                }
-                debug($"[{port}]: Client closed connection", 1);
+                
+                debug($"[{port}]: Client closed connection", 0);
 
             }
             catch(Exception e)
             {
-
+                debug($"[{port}]: {e.Message}", 4);
             }
 
         }

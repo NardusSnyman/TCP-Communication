@@ -13,6 +13,7 @@
       <DependentUpon>BlankPage1.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ClientMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Client.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Command.cs" />
