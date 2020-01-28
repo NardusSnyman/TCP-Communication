@@ -10,11 +10,7 @@ namespace ClientServer
     {
         public string ip;
         public int buffer_size;
-        public TimeSpan timeout_time = TimeSpan.FromSeconds(5);//timeout before the client or server quits reading because no data is read
-        public TimeSpan timeout_on_recent = TimeSpan.FromMilliseconds(300);//timeout before quit if a message is read beforehand
 
-
-        public int server_reconnect_attempts = 3;
         public List<int> ports;
         public ConnectionArguments()
         {

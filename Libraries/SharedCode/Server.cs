@@ -20,9 +20,13 @@ namespace ClientServer
         {
 
         }
-        public Server(ConnectionArguments args1)
+        public Server(ConnectionArguments args1, ThreadingUtil util = null)
         {
             args = args1;
+            if (this.threadingUtil != null)
+                this.threadingUtil = util;
+            else
+                this.threadingUtil = new ThreadingUtilDef();
         }
         //-----------------
         public ConnectionArguments args;//connection arguments
@@ -30,15 +34,22 @@ namespace ClientServer
         public List<TcpListener> listeners;//server main listener
         public List<Command> commands = new List<Command>();//server commands
         public Action<string, int> debug;//message and level  1=surface, 2=base events, 3=debug data
-
+        private ThreadingUtil threadingUtil;
         NetworkData overread = new NetworkData();//data storage for overread data
+
+        private int stop = 0;
+        public void Restart()
+        {
+            stop = 1;
+            Start();
+        }
 
         public void Start()
         {
             ///////
             foreach (int port in args.ports)
             {
-                new Task(() =>
+                threadingUtil.BackgroundTask(()=>
                 {
                     if (debug == null)
                         debug = new Action<string, int>((x, y) => { });
@@ -48,7 +59,7 @@ namespace ClientServer
 
                     debug("[SYS]: started server with port " + port, 1);
 
-                    while (true)
+                    while (stop == 0)
                     {
                         debug($"[{port}]: waiting", 1);
                         while (!listener.Pending())
@@ -60,7 +71,9 @@ namespace ClientServer
 
 
                     }
-                }).Start();
+                    stop = 0;
+                    listener.Stop();
+                });
             }
         }//start server
 
@@ -139,9 +152,9 @@ namespace ClientServer
 
         }
 
-        public void Stop(TcpListener listener)//stop server
+        public void Stop()//stop server
         {
-            listener.Stop();
+            stop = 1;
         }
     }
 }

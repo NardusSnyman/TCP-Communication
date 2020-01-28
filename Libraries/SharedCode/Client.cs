@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Sockets;
 using static ClientServer.EncodingClasses;
-using System.Threading;
+using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ClientServer
 {
@@ -15,10 +13,15 @@ namespace ClientServer
         NetworkData overread;//data storage for overread data
         public Queue<ClientMessage> command_queue = new Queue<ClientMessage>();
         public Action<string, int> debug;//message and level  1=surface, 2=base events, 3=debug data
-        public Client(ConnectionArguments args1)
+        public ThreadingUtil threadingUtil;
+        public Client(ConnectionArguments args1, ThreadingUtil util = null)
         {
             args = args1;
             if (debug == null) debug = new Action<string, int>((x, y) => { });
+            if (this.threadingUtil != null)
+                this.threadingUtil = util;
+            else
+                this.threadingUtil = new ThreadingUtilDef();
         }
         //-----------------
         public void Communicate(string operation, NetworkData message, Action<NetworkData> onCompleted, Action failed = null)
@@ -26,6 +29,16 @@ namespace ClientServer
             ClientMessage cm = new ClientMessage();
             cm.failed = failed;
             cm.completed = onCompleted;
+            cm.operation = operation;
+            cm.message = message;
+            command_queue.Enqueue(cm);
+            debug("[SYS]: added operation to queue", 1);
+        }
+        public void CommunicatePackets(string operation, NetworkData message, Action<NetworkData> onPacketRecieved, Action failed = null)
+        {
+            ClientMessage cm = new ClientMessage();
+            cm.failed = failed;
+            cm.onPacketRecieved = onPacketRecieved;
             cm.operation = operation;
             cm.message = message;
             command_queue.Enqueue(cm);
@@ -43,7 +56,7 @@ namespace ClientServer
 
             start = new Action(() =>
             {
-                new Task(() =>
+                threadingUtil.BackgroundTask(()=>
                 {
                     while (true)
                     {
@@ -68,7 +81,7 @@ namespace ClientServer
                                     ClientMessage cm = command_queue.Dequeue();//get args
                                     debug($"[{c.port}]: data pulled from queue", 0);
 
-                                var t = new Task(() =>
+                                threadingUtil.BackgroundTask(() =>
                                 {
                                     try
                                     {
@@ -85,7 +98,7 @@ namespace ClientServer
                                     {
                                         msg = cm.message.GetDecodedString();//initialize message
                                     }
-                                    NetworkData dat = NetworkData.fromEncodedString(String.Join(SendRecieveUtil.separator,
+                                    NetworkData dat = NetworkData.fromEncodedString(String.Join(EncodingClasses.separator,
                                         new List<string>() { cm.operation, msg }.Select(x => NetworkData.fromDecodedString(x).GetEncodedString())));
                                     debug($"[{c.port}]: Sending bytes", 1);
                                     SendRecieveUtil.SendBytes(c, dat, args, debug);//send bytes
@@ -107,17 +120,21 @@ namespace ClientServer
                                     SendRecieveUtil.RecieveBytes(c, ref overread, args, length, cm.progress, debug, new List<RetrievalNode>() { new RetrievalNode()
                             {
 
-                                direct = (x) => { cm.completed(x); c.Close(); debug($"[{c.port}]: Client closed", 0); debug($"[{c.port}]: data={x.GetDecodedString()}", 3); }, motive = "message"
+                                direct = (x) => {
+                                    threadingUtil.MainThreadTask(()=>cm.completed(x));
+                                    c.Close(); debug($"[{c.port}]: Client closed", 0); 
+                                    debug($"[{c.port}]: data={x.GetDecodedString()}", 3); 
+                                }, packetSend=cm.onPacketRecieved, motive = "message"
                             } });//get final data and close client
 
 
                                 });
-                                t.Start();
+                                
                             }
                         }
 
                     }
-                }).Start();
+                });
 
 
             });

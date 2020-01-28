@@ -8,17 +8,16 @@ namespace ClientServer
     
     public class EncodingClasses
     {
+        public static string separator { get { string x = ""; while (x.Length < expanded_length) x = 9 + x; return x; } }
+        public static string null_char { get { string x = ""; while (x.Length < expanded_length) x = 8 + x; return x; } }
         private static char filler = '_';//must be availabe in utf8
         public static int expanded_length = 5;//must be > 5
+        public static string parameter_char = ";";
         public class NetworkData//contains filler for constant 
         {
             public List<string> bytes;
 
             public Stream finished_stream;
-            public NetworkData()
-            {
-                bytes = new List<string>();
-            }
             public static NetworkData fromEncodedString(string data)
             {
                 var byte1 = new List<string>();
@@ -38,12 +37,12 @@ namespace ClientServer
 
                 return new NetworkData() { bytes = dat } ;
             }
-            public static NetworkData Empty()
-            {
-                var dat = toNet("null".ToCharArray());
+            public static NetworkData Empty { get {
+                    var dat = fromEncodedString(null_char);
 
-                return new NetworkData() { bytes = dat };
-            }
+                    return dat;
+                } }
+
             public static NetworkData fromDecodedBytes(byte[] data)
             {
                 List<string> str = new List<string>();
@@ -67,6 +66,10 @@ namespace ClientServer
             {
                 return String.Join("", toBase(bytes.ToArray()));
             }
+            public string[] Parameters()
+            {
+                return String.Join("", toBase(bytes.ToArray())).Split(parameter_char);
+            }
             public byte[] GetDecodedBytes()
             {
                 List<byte> bytes_ = new List<byte>();
@@ -78,7 +81,7 @@ namespace ClientServer
             }
             public void InitStream(out int length_)
             {
-                string data = SendRecieveUtil.separator + String.Join("", bytes) + SendRecieveUtil.separator;//initial
+                string data = EncodingClasses.separator + String.Join("", bytes) + EncodingClasses.separator;//initial
                 long leng = data.Length + String.Join("", toNet(data.Length.ToString().ToCharArray())).Length;//length of initial and literal length together
                 string length = String.Join("", toNet(Convert.ToInt32(leng).ToString().ToCharArray()));
                 string data1 = length + data;//new predicted length ^ and data

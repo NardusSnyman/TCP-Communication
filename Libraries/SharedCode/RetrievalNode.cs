@@ -8,6 +8,7 @@ namespace ClientServer
     public class RetrievalNode
     {
         public Action<NetworkData> direct;
+        public Action<NetworkData> packetSend;
         public string motive;
     }
 }

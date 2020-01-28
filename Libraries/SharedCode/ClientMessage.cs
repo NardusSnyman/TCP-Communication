@@ -12,6 +12,7 @@ namespace ClientServer
         public string operation;
         public NetworkData message;
         public Action<NetworkData> completed;
+        public Action<NetworkData> onPacketRecieved;
         public Action failed;
         public Action<double> progress;
     }

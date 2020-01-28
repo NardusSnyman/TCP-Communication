@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using static ClientServer.EncodingClasses;
 
 namespace ClientServer
@@ -10,6 +7,11 @@ namespace ClientServer
     {
         public string operation;
         public Func<NetworkData, NetworkData> action;
+        public Command(string operation, Func<NetworkData, NetworkData> action)
+        {
+            this.operation = operation;
+            this.action = action;
+        }
         public Command()
         {
 

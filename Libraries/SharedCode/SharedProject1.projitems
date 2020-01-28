@@ -21,5 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)EncodingClasses.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrievalNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SendRecieveUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreadingUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreadingUtilDef.cs" />
   </ItemGroup>
 </Project>
