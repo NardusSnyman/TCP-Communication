@@ -9,12 +9,10 @@ namespace ClientServer
     public class ConnectionArguments
     {
         public string ip;
-        public int buffer_size;
-        public TimeSpan timeout_time = TimeSpan.FromSeconds(5);//timeout before the client or server quits reading because no data is read
-        public TimeSpan timeout_on_recent = TimeSpan.FromMilliseconds(300);//timeout before quit if a message is read beforehand
+        public int buffer_size = 2048;
+        public TimeSpan recieve_timeout = TimeSpan.FromSeconds(2);
+        public TimeSpan send_timeout = TimeSpan.FromSeconds(1);
 
-
-        public int server_reconnect_attempts = 3;
         public List<int> ports;
         public ConnectionArguments()
         {
@@ -41,14 +39,6 @@ namespace ClientServer
             {
                 this.buffer_size++;
             }
-        }
-        public static ConnectionArguments fromLocal(List<int> ports, int buffer_size)
-        {
-            ConnectionArguments args = new ConnectionArguments();
-            args.ip = GetLocalIPAddress();
-            args.ports = ports;
-            args.buffer_size = buffer_size;
-            return args;
         }
         public static ConnectionArguments fromLocal(int port, int buffer_size)
         {

@@ -20,9 +20,13 @@ namespace ClientServer
         {
 
         }
-        public Server(ConnectionArguments args1)
+        public Server(ConnectionArguments args1, ThreadingUtil util = null)
         {
             args = args1;
+            if (this.threadingUtil != null)
+                this.threadingUtil = util;
+            else
+                this.threadingUtil = new ThreadingUtilDef();
         }
         //-----------------
         public ConnectionArguments args;//connection arguments
@@ -30,51 +34,48 @@ namespace ClientServer
         public List<TcpListener> listeners;//server main listener
         public List<Command> commands = new List<Command>();//server commands
         public Action<string, int> debug;//message and level  1=surface, 2=base events, 3=debug data
+        private ThreadingUtil threadingUtil;
+        NetworkData overread;//data storage for overread data
 
-        NetworkData overread = new NetworkData();//data storage for overread data
+        private int stop = 0;
+        public void Restart()
+        {
+            stop = 1;
+            Start();
+        }
 
         public void Start()
         {
             ///////
             foreach (int port in args.ports)
             {
-                new Task(() =>
+                threadingUtil.BackgroundTask(() =>
                 {
                     if (debug == null)
                         debug = new Action<string, int>((x, y) => { });
                     TcpListener listener = new TcpListener(IPAddress.Any, port);
+                    listener.Server.SendTimeout = 1;
+                    listener.Server.ReceiveTimeout = 1;
                     listener.Start();
 
 
                     debug("[SYS]: started server with port " + port, 1);
 
-                    while (true)
+                    while (stop == 0)
                     {
                         debug($"[{port}]: waiting", 1);
                         while (!listener.Pending())
                         {
 
                         }
+                        ConnectToClient(listener, port);
 
-                        try
-                        {
-                            Thread thr = new Thread(new ThreadStart(() =>
-                            {
-
-                                ConnectToClient(listener, port);
-                            }));
-                            thr.IsBackground = true;
-                            thr.Start();
-
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                        }
 
 
                     }
-                }).Start();
+                    stop = 0;
+                    listener.Stop();
+                });
             }
         }//start server
 
@@ -82,27 +83,29 @@ namespace ClientServer
         {
             try
             {
-                TcpClient cli = listener.AcceptTcpClient();//accept new client
+                ConnectClient cli = new ConnectClient();
+                cli.client = listener.AcceptTcpClient();//accept new client
 
-                debug($"[{port}]: Client Connected", 1);
+                debug($"[{port}]: Client Connected", 0);
                 int count = 0;
 
-                while (cli.Connected && count < 5)
-                {
+                
                     Command comm = new Command();
                     long length = 0;
+                    string return_ = "0";
                     debug($"[{port}]: wait for read", 1);
 
 
-                    SendRecieveUtil.RecieveBytes(cli, ref overread, args, 0, null, 
+                    SendRecieveUtil.RecieveBytes(cli, ref overread, args, 0, null, debug, 
                         new List<RetrievalNode>(){
                                 new RetrievalNode(){direct = (x) =>//length
                             {
                             try{
+                                    Console.WriteLine(x.GetDecodedString());
                             length = Convert.ToInt64(x.GetDecodedString());
                             }catch(Exception e)
                             {
-
+                            debug($"[SYS:163]: {e}", 4);
                             }
                                 if(length == 0)
                                 {
@@ -112,6 +115,15 @@ namespace ClientServer
                                 
                                 debug($"[{port}]: length={length}", 3);
                         }, motive="length"
+                    },new RetrievalNode(){direct = (x) =>//type
+                            {
+                                string s = x.GetDecodedString();
+                                if (s.Equals("1"))
+                                {
+                                    return_ = "1";
+                                }
+                            
+                        }, motive="type"
                     },
                     new RetrievalNode(){direct = (x) =>//operation
                     {
@@ -137,26 +149,28 @@ namespace ClientServer
                         {
                             if(x!=null){
                                 debug($"[{port}]: data processed and sent", 1);
-                                 debug($"[{port}]: message recieved", 2);
+                                debug($"[{port}]: message recieved", 2);
                             var output = comm.action(x);
-                            SendRecieveUtil.SendBytes(cli, output, args, port);
+                            if(return_.Equals("1"))
+                            SendRecieveUtil.SendBytes(cli, output, args, debug);
                             }
                         }, motive="message"}
                         });
-                }
-                debug($"[{port}]: Client closed connection", 1);
+                
+                debug($"[{port}]: Client closed connection", 0);
 
             }
             catch(Exception e)
             {
+                debug($"[SYS:653]: {e}", 4);
 
             }
 
         }
 
-        public void Stop(TcpListener listener)//stop server
+        public void Stop()//stop server
         {
-            listener.Stop();
+            stop = 1;
         }
     }
 }

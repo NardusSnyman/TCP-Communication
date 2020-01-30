@@ -13,6 +13,7 @@
       <DependentUpon>BlankPage1.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ClientMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Client.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Command.cs" />
@@ -20,5 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)EncodingClasses.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RetrievalNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SendRecieveUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreadingUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreadingUtilDef.cs" />
   </ItemGroup>
 </Project>
