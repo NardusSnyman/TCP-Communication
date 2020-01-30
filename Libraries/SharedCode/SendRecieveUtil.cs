@@ -52,7 +52,7 @@ namespace ClientServer
                     c.Reconnect();
                     if (!sw.IsRunning)
                         sw.Start();
-                    if (sw.ElapsedMilliseconds > TimeSpan.FromSeconds(0.5).TotalMilliseconds)
+                    if (sw.ElapsedMilliseconds > c.args.recieve_timeout.TotalMilliseconds)
                         break;
                     debug($"[{c.port}]: error=" + e.Message + e.InnerException, 2);
                     
@@ -72,66 +72,89 @@ namespace ClientServer
                 {
 
                     debug($"[{c.port}]: executing node ({node.motive})", 2);
-                    var dat = getData(c, ref overread, conn.buffer_size, separator, total, prog, node.packetSend, debug);//size
+                    var dat = getData(node.motive, c, ref overread, conn.buffer_size, separator, total, prog, node.packetSend, debug, out string param);//size
+
+                if (dat != null)
+                {
                     debug($"[{c.port}]: dataIn={dat.GetDecodedString()}", 5);
-                    if(dat != null)
                     node.direct?.Invoke(dat);
+
+                }
+                else
+                {
+                    if (param.Equals("empty"))
+                    {
+                        debug($"[{c.port}]: network data returned empty", 2);
+                        node.direct?.Invoke(NetworkData.fromDecodedString("."));
+                    }
+                    else
+                    {
+                        debug($"[{c.port}]: network data returning null", 2);
+                    }
+                }
                     
                     
                     
                 }
         }
-        public static NetworkData getData(ConnectClient c, ref NetworkData overread, int buffer_size, string separator, int total, Action<double> prog, Action<NetworkData> bytes, Action<string, int> debug)
+        public static NetworkData getData(string m, ConnectClient c, ref NetworkData overread, int buffer_size, string separator, int total, Action<double> prog, Action<NetworkData> bytes, Action<string, int> debug, out string param)
         {
+            
             Stopwatch sw = new Stopwatch();
             int onlyonce = 0;
                 int index = 0;
                 StringBuilder sb = new StringBuilder();
                 byte[] buffer = new byte[buffer_size];
-                if (overread == null || overread.GetDecodedString() == "null")
-                    overread = NetworkData.fromEncodedString("");
 
+            debug($"[{c.port}]: init getData", 3);
             NetworkData output = NetworkData.Empty;
-            while (c.Connected) {
-
-                string dat = overread.GetEncodedString();
-                if ((index = dat.IndexOf(separator)) != -1)//contains ender in overread
+            while (true) {
+                debug($"[{c.port}]: motive=" + m, 2);
+                if (overread != null && (index = overread.GetEncodedString().IndexOf(separator)) != -1)//contains ender in overread
                 {
+                    string dat = overread.GetEncodedString();
                     debug($"[{c.port}]: overread contains end character", 2);
                     var return_ = NetworkData.fromEncodedString(dat.Substring(0, index));//return data
 
+                    if (dat.Substring(index + separator.Length).Equals(string.Empty))
+                        overread = null;
+                    else
                     overread = NetworkData.fromEncodedString(dat.Substring(index + separator.Length));//out overread
                     bytes?.Invoke(return_);
                     debug($"[{c.port}]: finalizing", 2);
                     sw.Reset();
-                    output = return_;//return data
+                    param = "normal";
+                    return return_;
                 }
                 else {//overread does not contain ender
-                    if (onlyonce == 0)
+                    if (onlyonce == 0 && overread != null)
+                    {
+                        debug($"[{c.port}]: {overread.GetEncodedString()}", 2);
                         sb.Append(overread.GetEncodedString());
+                    }
                     onlyonce = 1;
                     int length = 0;
                     try
                     {
-                        debug($"[{c.port}]: recieved packet ({length})", 2);
-                        if(c.GetStream().Length > 0 && c.Connected)
                         length = c.GetStream().Read(buffer, 0, buffer_size);//read string represented bytes
-                        debug("1", 2);
+                            debug($"[{c.port}]: recieved packet ({length})", 2);
                     }
-                    catch(Exception e)
+                    catch(System.IO.IOException e)
                     {
-                        debug($"[{c.port}]: server closed", 2);
-                        break;
+                        length = 0;
                     }
                     if (length == 0)
                     {
                         debug($"[{c.port}]: breaking", 2);
+                        c.Reconnect();
+
                         if (!sw.IsRunning)
                             sw.Start();
-                        if (sw.ElapsedMilliseconds > TimeSpan.FromSeconds(0.25).TotalMilliseconds)
+                        if (sw.ElapsedMilliseconds > TimeSpan.FromSeconds(1).TotalMilliseconds)
                         {
-                            c.Close();
-                            break;
+                            param = "notfound";
+                            return null;
+                            
                         }
                     }
                     else
@@ -140,6 +163,11 @@ namespace ClientServer
                         sw.Reset();
                         string data = Encoding.UTF8.GetString(buffer, 0, length);
                         debug($"[{c.port}]: packetdata={data}", 5);
+                        if (data.Equals(NetworkData.Empty))
+                        {
+                            param = "empty";
+                            return null;
+                        }
                         debug($"[{c.port}]: packetdata={NetworkData.fromEncodedString(data).GetDecodedString()}", 5);
                         if ((index = data.IndexOf(separator)) != -1)//contains ender in list
                         {
@@ -150,13 +178,19 @@ namespace ClientServer
 
                             var return_ = NetworkData.fromEncodedString(sb.ToString().Substring(0, index2));
 
+                            if (data.Substring(index + separator.Length).Equals(string.Empty))
+                                overread = null;
+                            else
                             overread = NetworkData.fromEncodedString(data.Substring(index + separator.Length));
+
                             bytes?.Invoke(return_);
                             prog?.Invoke(sb.Length / total);
                             debug($"[{c.port}]: finalizing", 2);
-                            debug(sb.ToString(), 5);
+                            debug(return_.GetEncodedString() + "--" + overread.GetEncodedString(), 5);
+                            debug(return_.GetDecodedString() + "--" + overread.GetDecodedString(), 5);
                             sw.Reset();
-                            output = return_;
+                            param = "normal";
+                            return return_;
 
                         }
                         else
@@ -175,10 +209,6 @@ namespace ClientServer
                     }
                 }
             }
-            sw.Reset();
-            if (output.GetEncodedString().Equals(null_char))
-                return null;
-            return output;
         }
         public static string toUnicodeString(char unicode, Action<string> debug)
         {

@@ -35,7 +35,7 @@ namespace ClientServer
         public List<Command> commands = new List<Command>();//server commands
         public Action<string, int> debug;//message and level  1=surface, 2=base events, 3=debug data
         private ThreadingUtil threadingUtil;
-        NetworkData overread = new NetworkData();//data storage for overread data
+        NetworkData overread;//data storage for overread data
 
         private int stop = 0;
         public void Restart()
@@ -49,11 +49,13 @@ namespace ClientServer
             ///////
             foreach (int port in args.ports)
             {
-                threadingUtil.BackgroundTask(()=>
+                threadingUtil.BackgroundTask(() =>
                 {
                     if (debug == null)
                         debug = new Action<string, int>((x, y) => { });
                     TcpListener listener = new TcpListener(IPAddress.Any, port);
+                    listener.Server.SendTimeout = 1;
+                    listener.Server.ReceiveTimeout = 1;
                     listener.Start();
 
 
@@ -66,8 +68,8 @@ namespace ClientServer
                         {
 
                         }
-                            ConnectToClient(listener, port);
- 
+                        ConnectToClient(listener, port);
+
 
 
                     }
@@ -81,7 +83,8 @@ namespace ClientServer
         {
             try
             {
-                ConnectClient cli = (ConnectClient)listener.AcceptTcpClient();//accept new client
+                ConnectClient cli = new ConnectClient();
+                cli.client = listener.AcceptTcpClient();//accept new client
 
                 debug($"[{port}]: Client Connected", 0);
                 int count = 0;
@@ -89,6 +92,7 @@ namespace ClientServer
                 
                     Command comm = new Command();
                     long length = 0;
+                    string return_ = "0";
                     debug($"[{port}]: wait for read", 1);
 
 
@@ -97,10 +101,11 @@ namespace ClientServer
                                 new RetrievalNode(){direct = (x) =>//length
                             {
                             try{
+                                    Console.WriteLine(x.GetDecodedString());
                             length = Convert.ToInt64(x.GetDecodedString());
                             }catch(Exception e)
                             {
-
+                            debug($"[SYS:163]: {e}", 4);
                             }
                                 if(length == 0)
                                 {
@@ -110,6 +115,15 @@ namespace ClientServer
                                 
                                 debug($"[{port}]: length={length}", 3);
                         }, motive="length"
+                    },new RetrievalNode(){direct = (x) =>//type
+                            {
+                                string s = x.GetDecodedString();
+                                if (s.Equals("1"))
+                                {
+                                    return_ = "1";
+                                }
+                            
+                        }, motive="type"
                     },
                     new RetrievalNode(){direct = (x) =>//operation
                     {
@@ -137,6 +151,7 @@ namespace ClientServer
                                 debug($"[{port}]: data processed and sent", 1);
                                 debug($"[{port}]: message recieved", 2);
                             var output = comm.action(x);
+                            if(return_.Equals("1"))
                             SendRecieveUtil.SendBytes(cli, output, args, debug);
                             }
                         }, motive="message"}
@@ -147,7 +162,8 @@ namespace ClientServer
             }
             catch(Exception e)
             {
-                debug($"[{port}]: {e.Message}", 4);
+                debug($"[SYS:653]: {e}", 4);
+
             }
 
         }

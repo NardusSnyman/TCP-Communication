@@ -10,6 +10,7 @@ namespace ClientServer
     public class ClientMessage
     {
         public string operation;
+        public bool return_;
         public NetworkData message;
         public Action<NetworkData> completed;
         public Action<NetworkData> onPacketRecieved;

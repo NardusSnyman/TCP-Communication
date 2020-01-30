@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ClientServer
@@ -8,11 +9,11 @@ namespace ClientServer
     
     public class EncodingClasses
     {
-        public static string separator { get { string x = ""; while (x.Length < expanded_length) x = 9 + x; return x; } }
-        public static string null_char { get { string x = ""; while (x.Length < expanded_length) x = 8 + x; return x; } }
+        public static string separator { get { string x = "9"; while (x.Length < expanded_length) x = 9 + x; return x; } }
+        public static string null_char { get { string x = "8"; while (x.Length < expanded_length) x = 9 + x; return x; } }
+        public static string split_char { get { string x = "7"; while (x.Length < expanded_length) x = 9 + x; return x; } }
         private static char filler = '_';//must be availabe in utf8
         public static int expanded_length = 5;//must be > 5
-        public static string parameter_char = ";";
         public class NetworkData//contains filler for constant 
         {
             public List<string> bytes;
@@ -36,6 +37,20 @@ namespace ClientServer
                 var dat = toNet(data.ToCharArray());
 
                 return new NetworkData() { bytes = dat } ;
+            }
+            public static NetworkData fromParameters(object[] data)
+            {
+                List<string> val = new List<string>();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    var dat = toNet(data[i].ToString().ToCharArray());
+                    val.AddRange(dat);
+
+                    if (i != data.Length - 1)
+                        dat.Add(split_char);
+                }
+
+                return new NetworkData() { bytes = val };
             }
             public static NetworkData Empty { get {
                     var dat = fromEncodedString(null_char);
@@ -68,7 +83,22 @@ namespace ClientServer
             }
             public string[] Parameters()
             {
-                return String.Join("", toBase(bytes.ToArray())).Split(parameter_char);
+                string[] param = new string[] { };
+                string[] temp = new string[] { };
+                for(int i = 0; i < param.Length; i++)
+                {
+                    if (param.Equals(split_char))
+                    {
+                        temp = new string[] { };
+                        param.Append(String.Join("", toBase(temp.ToArray())));
+                    }
+                    else
+                    {
+                        string p = param[i];
+                        temp.Append(p);
+                    }
+                }
+                return param.ToArray();
             }
             public byte[] GetDecodedBytes()
             {
@@ -81,14 +111,24 @@ namespace ClientServer
             }
             public void InitStream(out int length_)
             {
-                string data = EncodingClasses.separator + String.Join("", bytes) + EncodingClasses.separator;//initial
-                long leng = data.Length + String.Join("", toNet(data.Length.ToString().ToCharArray())).Length;//length of initial and literal length together
-                string length = String.Join("", toNet(Convert.ToInt32(leng).ToString().ToCharArray()));
-                string data1 = length + data;//new predicted length ^ and data
-                
-                var dat = Encoding.UTF8.GetBytes(data1);//data
-                finished_stream = new MemoryStream(dat);
-                length_ = Convert.ToInt32(NetworkData.fromEncodedString(length).GetDecodedString());
+                if (bytes.First().Equals(NetworkData.Empty))
+                {
+                    var dat = Encoding.UTF8.GetBytes(NetworkData.Empty.GetEncodedString());//data
+                    length_ = dat.Length;
+                    finished_stream = new MemoryStream(dat);
+                }
+                else
+                {
+                    string data = EncodingClasses.separator + String.Join("", bytes) + EncodingClasses.separator;//initial
+                    long leng = data.Length + String.Join("", toNet(data.Length.ToString().ToCharArray())).Length;//length of initial and literal length together
+                    string length = String.Join("", toNet(Convert.ToInt32(leng).ToString().ToCharArray()));
+                    string data1 = length + data;//new predicted length ^ and data
+
+                    var dat = Encoding.UTF8.GetBytes(data1);//data
+                    finished_stream = new MemoryStream(dat);
+                    length_ = Convert.ToInt32(NetworkData.fromEncodedString(length).GetDecodedString());
+                }
+              
             }
             private static List<string> toNet(char[] bytes1)
             {

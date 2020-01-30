@@ -9,12 +9,12 @@ namespace ClientServer
     {
         public void BackgroundTask(Action Act)
         {
-            Act();
+            Act.Invoke();
         }
 
         public void MainThreadTask(Action Act)
         {
-            Act();
+            Act.Invoke();
         }
     }
 }
